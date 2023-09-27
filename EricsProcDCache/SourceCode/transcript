@@ -1,0 +1,182 @@
+# Compile of alu.sv was successful.
+# Compile of br_bool.sv was successful.
+# Compile of common_package.sv was successful.
+# Compile of cpu.sv was successful.
+# Compile of cpu_tb.v was successful.
+# Compile of dst_mux.sv was successful.
+# Compile of id.sv was successful.
+# Compile of instr_mem.sv was successful.
+# Compile of intCntrl.sv was successful.
+# Compile of prgm_cntr.sv was successful.
+# Compile of rf.sv was successful.
+# Compile of rf_mem_blk.v was successful.
+# Compile of rst_synch.v was successful.
+# Compile of spart.sv was successful.
+# Compile of spart_split_bus.sv was successful.
+# Compile of src_mux.sv was successful.
+# Compile of UART_Q.sv was successful.
+# Compile of UART_rx.sv was successful.
+# Compile of UART_tx.sv was successful.
+# Compile of cache.v was successful.
+# Compile of d_mem.sv was successful.
+# Compile of mem_hierarchy.sv was successful.
+# 22 compiles, 0 failed with no errors.
+vsim work.cpu_tb
+# vsim work.cpu_tb 
+# Start time: 19:15:12 on Sep 09,2023
+# Loading work.cpu_tb
+# Loading sv_std.std
+# Loading work.common
+# Loading work.cpu
+# Loading work.pc
+# Loading work.IM
+# Loading work.id
+# Loading work.rf
+# Loading work.rf_mem_blk
+# Loading work.src_mux
+# Loading work.alu
+# Loading work.dmem_hierarchy
+# Loading work.cache
+# Loading work.d_mem
+# Loading work.dst_mux
+# Loading work.br_bool
+# Loading work.intCntrl
+# ** Warning: (vsim-3015) [PCDPC] - Port size (64) does not match connection size (1) for port 'wdata'. The port definition is at: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv(1).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/iCPU/iDM/iDMEM File: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv Line: 198
+do C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/wave.do
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run
+run -all
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iDM/Dcache/hit
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3015) [PCDPC] - Port size (64) does not match connection size (1) for port 'wdata'. The port definition is at: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv(1).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/iCPU/iDM/iDMEM File: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv Line: 198
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3015) [PCDPC] - Port size (64) does not match connection size (1) for port 'wdata'. The port definition is at: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv(1).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/iCPU/iDM/iDMEM File: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv Line: 198
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3015) [PCDPC] - Port size (64) does not match connection size (1) for port 'wdata'. The port definition is at: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv(1).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/iCPU/iDM/iDMEM File: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv Line: 198
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/dm_re_EX_DM
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/dm_we_EX_DM
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iDM/state
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iDM/u_we \
+sim:/cpu_tb/iCPU/iDM/u_re
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iDM/u_rdy
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iDM/addr
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3015) [PCDPC] - Port size (64) does not match connection size (1) for port 'wdata'. The port definition is at: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv(1).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/iCPU/iDM/iDMEM File: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv Line: 198
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iALU/src0 \
+sim:/cpu_tb/iCPU/iALU/src1
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iALU/func
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3015) [PCDPC] - Port size (64) does not match connection size (1) for port 'wdata'. The port definition is at: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv(1).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/iCPU/iDM/iDMEM File: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv Line: 198
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iRF/iBNK0/mem
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3015) [PCDPC] - Port size (64) does not match connection size (1) for port 'wdata'. The port definition is at: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv(1).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/iCPU/iDM/iDMEM File: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv Line: 198
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iDM/d_line
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iDM/u_addr
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3015) [PCDPC] - Port size (64) does not match connection size (1) for port 'wdata'. The port definition is at: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv(1).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/iCPU/iDM/iDMEM File: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv Line: 198
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
+add wave -position insertpoint  \
+sim:/cpu_tb/iCPU/iDM/u_rd_data
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3015) [PCDPC] - Port size (64) does not match connection size (1) for port 'wdata'. The port definition is at: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv(1).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/iCPU/iDM/iDMEM File: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv Line: 198
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# ** Warning: (vsim-3015) [PCDPC] - Port size (64) does not match connection size (1) for port 'wdata'. The port definition is at: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv(1).
+#    Time: 0 ps  Iteration: 0  Instance: /cpu_tb/iCPU/iDM/iDMEM File: C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv Line: 198
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
+# Compile of mem_hierarchy.sv was successful.
+restart
+# ** Note: (vsim-12125) Error and warning message counts have been reset to '0' because of 'restart'.
+# Loading work.dmem_hierarchy
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
+restart
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
+restart
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
+restart
+run -all
+# ** Note: $stop    : C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v(35)
+#    Time: 3005 ps  Iteration: 1  Instance: /cpu_tb
+# Break in Module cpu_tb at C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v line 35
+run -all
