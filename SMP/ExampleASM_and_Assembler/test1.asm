@@ -1,0 +1,58 @@
+
+		ADD R2, R4, R7
+		ADDIEQ R11, R2, -1
+L1:		LLB R3, 0x04
+        SUBI R3, R3, 1
+		B NEQ, L1
+		SLL R4, R5, 3
+		XORI R12, R5, 0xAA55
+		LW R3, R2, 63
+Lasd: 	PUSH R3
+		POP R2
+		B OVFL, Lasd
+		MOVC R3, R2, 1
+		RTI
+		ADD R2, R4, R7
+		ADDC R1, R9, R2
+		SUB R8, R3, R4
+		SUBB R11, R4, R3
+		
+		ADDI R12, R9, 0x01
+		ADDIEQ R3, R1, 3
+		ADDINE R4, R13, 63
+		ADDIGT R7, R6, -2
+		SUBI R4, R5, 7
+		ANDI R3, R2, 0x0F
+		ORI R13, R10, 0x70
+		XORI R4, R6, -1
+		
+		SLL R7, R11, 5
+		SRL R3, R13, 14
+		SRA R7, R2, 2
+		
+		LW R5, R3, 0
+		SW R14, R2, 1
+		
+		LLB R2, 0x89
+		LHB R2, 0x01
+
+		JAL Lasd
+		JR R15
+		RTI
+		
+		PUSH R8
+		POP R13
+		
+		MOVC R6, R3, 0x03
+		
+		MULU R2, R4, R5
+		MULS R4, R7, R11
+		XMULH R3
+		
+		
+		
+		
+		
+		
+		
+

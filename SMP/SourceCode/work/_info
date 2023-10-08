@@ -1,0 +1,591 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/intelFPGA_lite/20.1
+valu
+Z0 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
+Z1 DXx4 work 6 common 0 22 T9CeB9XdhQzkeTX1>BmL=0
+Z2 !s110 1694304884
+!i10b 1
+!s100 GO^kR4F9H;2jbT3>bInk@0
+Z3 !s11b Dg1SIo80bB@j0V0VzS_@n1
+I80GP67`44c9h1Ol_Y02e`2
+Z4 VDg1SIo80bB@j0V0VzS_@n1
+S1
+Z5 dC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode
+w1694106565
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/alu.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/alu.sv
+!i122 67
+L0 1 146
+Z6 OV;L;2020.1;71
+r1
+!s85 0
+31
+Z7 !s108 1694304884.000000
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/alu.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/alu.sv|
+!i113 1
+Z8 o-work work -sv
+Z9 tCvgOpt 0
+vbr_bool
+R0
+R2
+!i10b 1
+!s100 WemoSUG8d:D:6f2>C53g`0
+R3
+I^bi]NY8Za[gk6d>[IofPE1
+R4
+S1
+R5
+w1694114444
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/br_bool.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/br_bool.sv
+!i122 68
+L0 1 35
+R6
+r1
+!s85 0
+31
+R7
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/br_bool.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/br_bool.sv|
+!i113 1
+R8
+R9
+vcache
+Z10 !s110 1694304887
+!i10b 1
+!s100 ?RiFD1J>bCmbK51DV<;3:0
+R3
+ILD>SMFj8;[NnS?Lbkb3D@1
+R4
+R5
+w1694128767
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cache.v
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cache.v
+!i122 86
+L0 1 55
+R6
+r1
+!s85 0
+31
+Z11 !s108 1694304887.000000
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cache.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cache.v|
+!i113 1
+Z12 o-work work
+R9
+Xcommon
+R0
+Z13 !s110 1694304885
+!i10b 1
+!s100 C_miBBS<<>ec<m^]KOm?]3
+R3
+IT9CeB9XdhQzkeTX1>BmL=0
+VT9CeB9XdhQzkeTX1>BmL=0
+S1
+R5
+w1677082004
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/common_package.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/common_package.sv
+!i122 69
+L0 1 0
+R6
+r1
+!s85 0
+31
+R7
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/common_package.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/common_package.sv|
+!i113 1
+R8
+R9
+vcpu
+R0
+R1
+R13
+!i10b 1
+!s100 g>J4@ICD0GUTBciiB2ig31
+R3
+I6oo75[W=Z^cid=mA5`4PG1
+R4
+S1
+R5
+w1694134970
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu.sv
+!i122 70
+L0 1 156
+R6
+r1
+!s85 0
+31
+Z14 !s108 1694304885.000000
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu.sv|
+!i113 1
+R8
+R9
+vcpu_tb
+R13
+!i10b 1
+!s100 SaLehmT3fOHL?Wo=KFgzZ3
+R3
+IfC[Oi=Gg8I6BP=^UADPQ62
+R4
+R5
+w1694114606
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v
+!i122 71
+L0 1 41
+R6
+r1
+!s85 0
+31
+R14
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/cpu_tb.v|
+!i113 1
+R12
+R9
+vd_mem
+R0
+R10
+!i10b 1
+!s100 g32XKEA6j0d:oIJLh]C4E1
+R3
+I4hIVzWcTG=Zna<1VBeV7b0
+R4
+S1
+R5
+w1694129493
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv
+!i122 87
+L0 1 108
+R6
+r1
+!s85 0
+31
+R11
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/d_mem.sv|
+!i113 1
+R8
+R9
+vDM
+R0
+!s110 1694114480
+!i10b 1
+!s100 `P9[V?C<6cf98`^b<@BmU0
+R3
+I7LgMK0z[?X]bZkL5Z2m930
+R4
+S1
+R5
+w1676666149
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/data_mem.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/data_mem.sv
+!i122 45
+L0 1 32
+R6
+r1
+!s85 0
+31
+!s108 1694114480.000000
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/data_mem.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/data_mem.sv|
+!i113 1
+R8
+R9
+n@d@m
+vdmem_hierarchy
+R0
+!s110 1694465380
+!i10b 1
+!s100 `?BFRHeWWYoggg=Cb3dN]3
+R3
+I1Ho]79T4^oPDV79QXLG192
+R4
+S1
+R5
+w1694465366
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv
+!i122 89
+L0 1 201
+R6
+r1
+!s85 0
+31
+!s108 1694465380.000000
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/mem_hierarchy.sv|
+!i113 1
+R8
+R9
+vdst_mux
+R0
+R13
+!i10b 1
+!s100 K0CHk]XM<1RTWImhRZ1PN3
+R3
+I3<U0BPnA^68SlZ:>5Vn`51
+R4
+S1
+R5
+w1694107415
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/dst_mux.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/dst_mux.sv
+!i122 72
+L0 1 29
+R6
+r1
+!s85 0
+31
+R14
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/dst_mux.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/dst_mux.sv|
+!i113 1
+R8
+R9
+vid
+R0
+R1
+R13
+!i10b 1
+!s100 ?AEklLdb^5N5e1UYIkZAX0
+R3
+I^ASMafcgD`NF3[I8;C7;^3
+R4
+S1
+R5
+w1694112461
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/id.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/id.sv
+!i122 73
+L0 1 496
+R6
+r1
+!s85 0
+31
+R14
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/id.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/id.sv|
+!i113 1
+R8
+R9
+vIM
+R0
+R13
+!i10b 1
+!s100 PN?SXZ^4FONa^61nLbF^M3
+R3
+IS^ZfCQRQc@5V2E3`2RSi=2
+R4
+S1
+R5
+w1694125821
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/instr_mem.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/instr_mem.sv
+!i122 74
+L0 1 20
+R6
+r1
+!s85 0
+31
+R14
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/instr_mem.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/instr_mem.sv|
+!i113 1
+R8
+R9
+n@i@m
+vintCntrl
+R0
+R1
+R13
+!i10b 1
+!s100 oR@U?S@nB2<e]fDVL8H7j0
+R3
+IKW<RQAZSn^?3b08_P^4ba3
+R4
+S1
+R5
+w1680136467
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/intCntrl.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/intCntrl.sv
+!i122 75
+L0 1 70
+R6
+r1
+!s85 0
+31
+R14
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/intCntrl.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/intCntrl.sv|
+!i113 1
+R8
+R9
+nint@cntrl
+vpc
+R0
+R1
+Z15 !s110 1694304886
+!i10b 1
+!s100 Sj56[3STKj>J[ZL^LFPoe1
+R3
+IdV7hnGofSI4nz9DzXl@5b1
+R4
+S1
+R5
+w1694105719
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/prgm_cntr.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/prgm_cntr.sv
+!i122 76
+L0 1 112
+R6
+r1
+!s85 0
+31
+Z16 !s108 1694304886.000000
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/prgm_cntr.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/prgm_cntr.sv|
+!i113 1
+R8
+R9
+vrf
+R0
+R15
+!i10b 1
+!s100 z85XV8XQZI2Q=dImZUcg<3
+R3
+IzeUQX2TDbJ85Vin0HMiYD0
+R4
+S1
+R5
+w1674501913
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rf.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rf.sv
+!i122 77
+L0 1 42
+R6
+r1
+!s85 0
+31
+R16
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rf.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rf.sv|
+!i113 1
+R8
+R9
+vrf_mem_blk
+R15
+!i10b 1
+!s100 kdLGgY?a2MYFz0N<UHO331
+R3
+II24X5@DOYaZ;`>[bLIdoG2
+R4
+R5
+w1669586752
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rf_mem_blk.v
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rf_mem_blk.v
+!i122 78
+L0 1 18
+R6
+r1
+!s85 0
+31
+R16
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rf_mem_blk.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rf_mem_blk.v|
+!i113 1
+R12
+R9
+vrst_synch
+R15
+!i10b 1
+!s100 Fh6G9Mz<_m1ZF;7CPhc?V2
+R3
+I9ide[l0fOK^e7d^UkCzj;2
+R4
+R5
+w1670730914
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rst_synch.v
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rst_synch.v
+!i122 79
+L0 1 27
+R6
+r1
+!s85 0
+31
+R16
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rst_synch.v|
+!s90 -reportprogress|300|-work|work|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/rst_synch.v|
+!i113 1
+R12
+R9
+vspart
+R0
+R15
+!i10b 1
+!s100 H`DW:b<WmQ]50I1_bYBJ40
+R3
+I9Ham:Pa?Fm=Y^c1;HQ>=o2
+R4
+S1
+R5
+w1673842012
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/spart.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/spart.sv
+!i122 80
+L0 20 63
+R6
+r1
+!s85 0
+31
+R16
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/spart.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/spart.sv|
+!i113 1
+R8
+R9
+vspart_split_bus
+R0
+R1
+R15
+!i10b 1
+!s100 GhhBk_M_L0dF?eZD6cGgD1
+R3
+ICOM5;41Cm7lZID<d@OkeY3
+R4
+S1
+R5
+w1677043690
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/spart_split_bus.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/spart_split_bus.sv
+!i122 81
+L0 20 55
+R6
+r1
+!s85 0
+31
+R16
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/spart_split_bus.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/spart_split_bus.sv|
+!i113 1
+R8
+R9
+vsrc_mux
+R0
+R1
+R15
+!i10b 1
+!s100 4b[VD:3I6zbR2gUo>XQdT1
+R3
+IfgVA>NA=JKc^8_O3PcYf13
+R4
+S1
+R5
+w1694106137
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/src_mux.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/src_mux.sv
+!i122 82
+L0 1 77
+R6
+r1
+!s85 0
+31
+R16
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/src_mux.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/src_mux.sv|
+!i113 1
+R8
+R9
+vUART_Q
+R0
+R10
+!i10b 1
+!s100 aF=a0[Z4@iMRh199Xe<[R2
+R3
+IU5SWI[cMNJdXSYULANhR12
+R4
+S1
+R5
+w1680812229
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_Q.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_Q.sv
+!i122 83
+L0 1 19
+R6
+r1
+!s85 0
+31
+R16
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_Q.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_Q.sv|
+!i113 1
+R8
+R9
+n@u@a@r@t_@q
+vUART_rx
+R0
+R10
+!i10b 1
+!s100 MDQeOjB[]ND5[hTPeXcKW2
+R3
+I:dTY3heU>lz93=<Fk<@S?1
+R4
+S1
+R5
+w1677011566
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_rx.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_rx.sv
+!i122 84
+L0 1 150
+R6
+r1
+!s85 0
+31
+R11
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_rx.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_rx.sv|
+!i113 1
+R8
+R9
+n@u@a@r@t_rx
+vUART_tx
+R0
+R10
+!i10b 1
+!s100 kl^_Wa4?P:oY5M9^6=k2?3
+R3
+IX;@N2FL:KMbTi7of6ZRzF1
+R4
+S1
+R5
+w1680811537
+8C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_tx.sv
+FC:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_tx.sv
+!i122 85
+L0 1 133
+R6
+r1
+!s85 0
+31
+R11
+!s107 C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_tx.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/UART_tx.sv|
+!i113 1
+R8
+R9
+n@u@a@r@t_tx

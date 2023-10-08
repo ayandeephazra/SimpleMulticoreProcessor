@@ -1,0 +1,163 @@
+$date
+	Fri Sep 08 11:32:14 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1s
+$end
+$scope module icarusTest_tb $end
+$var wire 8 ! count [7:0] $end
+$var reg 1 " clk $end
+$var reg 1 # en $end
+$var reg 1 $ rst_n $end
+$scope module iDUT $end
+$var wire 1 " clk $end
+$var wire 1 # en $end
+$var wire 1 $ rst_n $end
+$var reg 8 % count [7:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+b0 %
+0$
+0#
+0"
+b0 !
+$end
+#5
+1"
+#10
+1$
+0"
+#15
+1"
+#20
+1#
+0"
+#25
+b1 !
+b1 %
+1"
+#30
+0"
+#35
+b10 !
+b10 %
+1"
+#40
+0"
+#45
+b11 !
+b11 %
+1"
+#50
+0"
+#55
+b100 !
+b100 %
+1"
+#60
+0"
+#65
+b101 !
+b101 %
+1"
+#70
+0"
+#75
+b110 !
+b110 %
+1"
+#80
+0"
+#85
+b111 !
+b111 %
+1"
+#90
+0"
+#95
+b1000 !
+b1000 %
+1"
+#100
+0"
+#105
+b1001 !
+b1001 %
+1"
+#110
+0"
+#115
+b1010 !
+b1010 %
+1"
+#120
+0"
+#125
+b1011 !
+b1011 %
+1"
+#130
+0"
+#135
+b1100 !
+b1100 %
+1"
+#140
+0"
+#145
+b1101 !
+b1101 %
+1"
+#150
+0"
+#155
+b1110 !
+b1110 %
+1"
+#160
+0"
+#165
+b1111 !
+b1111 %
+1"
+#170
+0"
+#175
+b10000 !
+b10000 %
+1"
+#180
+0"
+#185
+b10001 !
+b10001 %
+1"
+#190
+0"
+#195
+b10010 !
+b10010 %
+1"
+#200
+0"
+#205
+b10011 !
+b10011 %
+1"
+#210
+0"
+#215
+b10100 !
+b10100 %
+1"
+#220
+0"
