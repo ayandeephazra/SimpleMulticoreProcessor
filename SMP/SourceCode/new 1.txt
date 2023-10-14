@@ -1,0 +1,9 @@
+Current Todos:
+
+set_dirty logic from statemachine rev
+
+stalling, cache-access of cpu1 mandated by cpu1? or is bus and cpu0 free to access it
+
+Issues:
+
+1. 

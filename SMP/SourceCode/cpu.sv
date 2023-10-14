@@ -8,7 +8,15 @@ module cpu
    output mm_re,
    output mm_we,
    output stall_IM_ID,			// interrupt controller needs this
-   output [15:0] mm_wdata
+   output [15:0] mm_wdata,
+   /*implement from below*/
+   output logic read_miss,
+   output logic write_miss,
+   output logic [1:0] write_miss_state,
+   input cpu_search,
+   output cpu_search_found,
+   input tag_in,
+   input cpu_datasel
   );
 
 wire [19:0] instr;				// instruction from IM
@@ -52,6 +60,9 @@ wire stall_EX_DM;
 wire stall_DM_WB;
 
 reg set_dirty;				// When writing to Dcache from CPU set the dirty bit
+wire d_hit;
+wire [4:0] dtag;
+wire dirty_bit;
 	   
 assign mm_addr = dst_EX_DM;
 
@@ -147,15 +158,23 @@ assign DM_we = ~|dst_EX_DM[15:13] & dm_we_EX_DM;	// qualified internal DM we
 	
 end */
 
+/* ripping out state machine logic that controls set_dirty */
 always_ff @ (posedge clk or negedge rst_n) begin
-	if (!rst_n)
+	if (!rst_n) begin
 		set_dirty = 0;
+		write_miss = 0;
+		read_miss = 0;
+	end
 	// we = DM_we
 	// we set dirty bit to 1 when it's a we and d cache hit
-	else if (DM_we & d_hit)
+	else if (DM_we & d_hit) begin
 		set_dirty = 1;
+		write_miss = 0;
+		read_miss = 0;
+	end
+    // what are the other default cases?
 	else
-		set_dirty = 1;
+		set_dirty = 0;
 end
 				   
 /////////////////////////
