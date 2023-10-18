@@ -18,7 +18,7 @@ package common;
   typedef enum logic [2:0] {NOOP, READ_MISS_0, READ_MISS_1, WRITE_MISS_0, WRITE_MISS_1, INVALIDATE} bus_op_t;
   
   /// Cache Block State ///
-  typedef enum logic [1:0] {SHARED, MODIFIED, INVALID} cache_block_state_t;
+  typedef enum logic [1:0] {MODIFIED, SHARED, INVALID} cache_block_state_t;
   
   localparam int0vec = 16'h0010;
   localparam int1vec = 16'h0020;
