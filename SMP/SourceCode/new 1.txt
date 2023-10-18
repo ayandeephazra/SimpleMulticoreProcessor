@@ -6,4 +6,18 @@ stalling, cache-access of cpu1 mandated by cpu1? or is bus and cpu0 free to acce
 
 Issues:
 
-1. 
+1. A block can be in one of the following states in the three memories
+
+	Cache of CPU 1		Cache of CPU 2		DMEM
+
+1.	VALID				VALID				VALID    --> SHARED
+
+2. 	VALID				INVALID 			INVALID  --> MODIFIED
+
+3. 	VALID 				INVALID 			VALID    --> MODIFIED (AFTER WRITE BACK)
+
+4.  INVALID 			INVALID 			INVALID  --> D.N.E 
+
+5.  INVALID 			INVALID 			VALID    --> BLOCK HAS NEVER BEEN CALLED
+
+

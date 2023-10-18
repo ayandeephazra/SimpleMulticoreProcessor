@@ -15,7 +15,8 @@ package common;
   typedef enum logic [1:0] {RF2SRC1, IMM8_2SRC1, NPC2SRC1, ZERO2SRC1} src1sel_t;
   
   /// SM bus op ///
-  typedef enum logic [2:0] {NOOP, READ_MISS_0, READ_MISS_1, WRITE_MISS_0, WRITE_MISS_1, INVALIDATE} bus_op_t;
+  typedef enum logic [2:0] {NOOP, READ_MISS_0, READ_MISS_1, WRITE_MISS_0, 
+      WRITE_MISS_1, INVALIDATE_0, INVALIDATE_1} bus_op_t;
   
   /// Cache Block State ///
   typedef enum logic [1:0] {MODIFIED, SHARED, INVALID} cache_block_state_t;

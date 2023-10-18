@@ -15,7 +15,7 @@ module cpu
    output logic [1:0] write_miss_state,
    input cpu_search,
    output cpu_search_found,
-   input tag_in,
+   input [10:0] bus_addr_in,
    input cpu_datasel
   );
 
