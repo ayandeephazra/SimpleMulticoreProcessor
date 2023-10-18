@@ -12,7 +12,7 @@ module cpu
    /*implement from below*/
    output logic read_miss,
    output logic write_miss,
-   output logic [1:0] write_miss_state,
+   output logic [1:0] block_state,
    input cpu_search,
    output cpu_search_found,
    input [10:0] bus_addr_in,

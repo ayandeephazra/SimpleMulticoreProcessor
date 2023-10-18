@@ -14,16 +14,16 @@ input write_miss_1; // input from cpu1 that tells the bus it has had a write mis
 input [1:0] block_state_0;
 input [1:0] block_state_1;
 input [10:0] addr_in; // FULL ADDRESS
-input [10:0] addr_out; /*used in conjunction with below signals to verify existence of valid cache block*/
 input cpu1_search_found; /*return signal that verifies if addr_out was in cpu0 or not*/
 input cpu0_search_found; 
-input invalidate_0;
+input invalidate_0; /* input from cpu that tells bus it has had an invalidate */
 input invalidate_1;
 output reg cpu_doing_curr_op; // SEP INTO 2 SIGNALS GRANT1 AND GRANT0
 output reg grant_0;
 output reg grant_1;
 output reg cpu0_datasel; /*if forwarding needed from other cpu, this is high*/
 output reg cpu1_datasel; 
+output [10:0] addr_out; /*used in conjunction with below signals to verify existence of valid cache block*/
 output reg cpu1_invalidate_tag; /* if a shared block is written to, then the other cpu must invalidate it's copy */
 output reg cpu0_invalidate_tag;
 output reg cpu0_wback_dmem; /*on write miss, we signal the cpu issuing the miss to write new data to dmem*/
@@ -176,7 +176,9 @@ case (state)
 		grant_0 = 1;
 		grant_1 = 0;
 		addr_out = addr_in;
+		/* invalidate data in other cpu*/
 		cpu1_invalidate_tag = 1;
+		/* write back data to dmem */
 		cpu0_wback_dmem = 1;
 	end
 	/* INVALIDATE_1 */
@@ -184,7 +186,9 @@ case (state)
 		grant_0 = 0;
 		grant_1 = 1;
 		addr_out = addr_in;
+		/* invalidate data in other cpu */
 		cpu0_invalidate_tag = 1;
+		/* write back data to dmem */
 		cpu1_wback_dmem = 1;
 	end
 endcase
