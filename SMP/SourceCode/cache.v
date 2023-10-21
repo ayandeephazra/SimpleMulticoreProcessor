@@ -1,4 +1,5 @@
-module cache(clk,rst_n,addr,wr_data,wdirty,we,re,rd_data,tag_out,hit,dirty);
+module cache(clk,rst_n,addr,wr_data,wdirty,we,re,cpu_search, 
+	rd_data,tag_out,hit,dirty,cpu_search_found);
 
 input clk,rst_n;
 input [10:0] addr;		// address to be read or written, 2-LSB's are dropped
@@ -6,11 +7,13 @@ input [63:0] wr_data;	// 64-bit cache line to write (4 words/line)
 input wdirty;			// dirty bit to be written
 input we;				// write enable for cache line
 input re;				// read enable (for power purposes only)
+input cpu_search;
 
 output hit;
 output dirty;
 output [63:0] rd_data;	// 64-bit cache line read out
 output [4:0] tag_out;	// 5-bit tag.  This is needed during evictions
+output reg cpu_search_found;
 
 reg [70:0]mem[0:63];	// {valid,dirty,tag[7:0],wdata[63:0]}
 reg [6:0] x;
@@ -40,9 +43,16 @@ always @(clk or we_filt or negedge rst_n)
 ////////////////////////////////////////////////////////////
 // Model cache read including 4:1 muxing of 16-bit words //
 //////////////////////////////////////////////////////////
-always @(clk or re or addr)
-  if (clk && re)				// read is on clock high
-    line = mem[addr[5:0]];
+always @(clk or re or addr) begin
+	if (clk && re)				// read is on clock high
+		line = mem[addr[5:0]];
+    // if the valid bit in address is high, then there is a match
+	if (clk && cpu_search && mem[addr[5:0]][70] == 1'b1)
+		cpu_search_found = 1;
+	else
+		cpu_search_found = 0;
+end
+
 	
 /////////////////////////////////////////////////////////////
 // If tag bits match and line is valid then we have a hit //

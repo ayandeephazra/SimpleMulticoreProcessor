@@ -1,8 +1,9 @@
 module bus(clk, rst_n, read_miss_0, read_miss_1,
-	write_miss_0, write_miss_1, block_state_0, block_state_1, addr_in, addr_out,
+	write_miss_0, write_miss_1, block_state_0, block_state_1, cpu0_addr_in, cpu1_addr_in, addr_out,
 	cpu1_search_found, cpu0_search_found, invalidate_0, invalidate_1, cpu_doing_curr_op, 
 	grant_0, grant_1, cpu0_datasel, cpu1_datasel, cpu0_invalidate_tag, cpu1_invalidate_tag,
-	cpu0_wback_dmem, cpu1_wback_dmem, cpu0_search, cpu1_search);
+	cpu0_wback_dmem, cpu1_wback_dmem, cpu0_invalidate_dmem, cpu1_invalidate_dmem,
+	cpu0_search, cpu1_search);
 	
 import common::*;				// import all encoding definitions
 
@@ -13,9 +14,10 @@ input write_miss_0; // input from cpu0 that tells the bus it has had a write mis
 input write_miss_1; // input from cpu1 that tells the bus it has had a write miss
 input [1:0] block_state_0;
 input [1:0] block_state_1;
-input [10:0] addr_in; // FULL ADDRESS
-input cpu1_search_found; /*return signal that verifies if addr_out was in cpu0 or not*/
-input cpu0_search_found; 
+input [10:0] cpu0_addr_in; // FULL ADDRESS
+input [10:0] cpu1_addr_in; // FULL ADDRESS
+input logic cpu1_search_found; /*return signal that verifies if addr_out was in cpu0 or not*/
+input logic cpu0_search_found; 
 input invalidate_0; /* input from cpu that tells bus it has had an invalidate */
 input invalidate_1;
 output reg cpu_doing_curr_op; // SEP INTO 2 SIGNALS GRANT1 AND GRANT0
@@ -23,11 +25,13 @@ output reg grant_0;
 output reg grant_1;
 output reg cpu0_datasel; /*if forwarding needed from other cpu, this is high*/
 output reg cpu1_datasel; 
-output [10:0] addr_out; /*used in conjunction with below signals to verify existence of valid cache block*/
+output reg [10:0] addr_out; /*used in conjunction with below signals to verify existence of valid cache block*/
 output reg cpu1_invalidate_tag; /* if a shared block is written to, then the other cpu must invalidate it's copy */
 output reg cpu0_invalidate_tag;
-output reg cpu0_wback_dmem; /*on write miss, we signal the cpu issuing the miss to write new data to dmem*/
+output reg cpu0_wback_dmem; /*signal the cpu to write new data to dmem*/
 output reg cpu1_wback_dmem;
+output reg cpu0_invalidate_dmem; /* signal the cpu to invalidate data to dmem*/
+output reg cpu1_invalidate_dmem;
 output reg cpu0_search; /*signal that notifies cpu0 to search its d-cache for a valid block ref'd by addr_out*/
 output reg cpu1_search; 
 
@@ -42,6 +46,8 @@ localparam BLOCK_STATE_INVALID = 2'b10;
 bus_op_t state, nxt_state;
 
 reg [1:0] count_to_4;
+reg rst_ct4;
+
 always @ (posedge clk or negedge rst_n)
 	if (!rst_n)
 		count_to_4 <= 4'h0;
@@ -64,19 +70,21 @@ always @(posedge clk, negedge rst_n)
 //////////////////////////////
 always @ (*) begin
 
-cu_doing_curr_op = cpu_doing_curr_op;
+cpu_doing_curr_op = cpu_doing_curr_op;
 grant_0 = 0;
 grant_1 = 0;
 nxt_state = NOOP;
 addr_out = 11'bxxxxxxxxxxx;
 cpu1_search = 0;
 cpu0_search = 0;
-cpu1_datasel = SOURCE_BUS;
-cpu0_datasel = SOURCE_BUS;
+cpu1_datasel = SOURCE_DMEM;
+cpu0_datasel = SOURCE_DMEM;
 cpu0_invalidate_tag = 0;
 cpu1_invalidate_tag = 0;
 cpu0_wback_dmem = 0;
 cpu1_wback_dmem = 0;
+cpu0_invalidate_dmem = 0;
+cpu1_invalidate_dmem = 0;
 
 case (state) 
 	NOOP: begin
@@ -87,7 +95,7 @@ case (state)
 			/* stall cpu 1 and check if tag match? */
 			// We search in cpu because of lower latency in retrieving data, 
 			// but if cpu1 does not have it, we retrieve it from main memory
-			addr_out = addr_in;
+			addr_out = cpu0_addr_in;
 			cpu1_search = 1;
 			
 			nxt_state = READ_MISS_0;
@@ -99,7 +107,7 @@ case (state)
 			/* stall cpu 0 and check if tag match? */
 			// We search in cpu because of lower latency in retrieving data, 
 			// but if cpu1 does not have it, we retrieve it from main memory
-			addr_out = addr_in;
+			addr_out = cpu1_addr_in;
 			cpu0_search = 1;
 			
 			nxt_state = READ_MISS_1;
@@ -126,7 +134,7 @@ case (state)
 			grant_1 = 1;
 			nxt_state = INVALIDATE_1;
 		end
-		else
+		else begin
 			nxt_state = NOOP;
 		end
 	end
@@ -140,6 +148,8 @@ case (state)
 		/* route data from cpu1 to cpu0 */
 	end
 	READ_MISS_1: begin
+	    grant_0 = 0;
+		grant_1 = 1;
 		if(cpu0_search_found)// make data available for 2 cycles at least
 			cpu1_datasel = SOURCE_OTHER_PROC; // 1 is other processor, 0 is bus
 		else 
@@ -151,9 +161,9 @@ case (state)
 		grant_1 = 0;
 		if(block_state_0==BLOCK_STATE_INVALID) begin
 			/* invalidate on active copy on cpu1, write to block on cpu0 with addr, write back to dmem*/
-			addr_out = addr_in;
+			addr_out = cpu0_addr_in;
 			cpu1_invalidate_tag = 1;
-			/* block written by default on cpu0? */
+			/* block written by default on cpu0? */ // invalidate, write back when evict from cache
 			cpu0_wback_dmem = 1;
 		end else
 			/*error*/
@@ -164,7 +174,7 @@ case (state)
 		grant_1 = 1;
 		if(block_state_1==BLOCK_STATE_INVALID) begin
 			/* invalidate on active copy on cpu0, write to block on cpu1 with addr, write back to dmem*/
-			addr_out = addr_in;
+			addr_out = cpu1_addr_in;
 			cpu0_invalidate_tag = 1;
 			/* block written by default on cpu1? */
 			cpu1_wback_dmem = 1;
@@ -175,21 +185,23 @@ case (state)
 	INVALIDATE_0:  begin
 		grant_0 = 1;
 		grant_1 = 0;
-		addr_out = addr_in;
+		addr_out = cpu0_addr_in;
 		/* invalidate data in other cpu*/
 		cpu1_invalidate_tag = 1;
-		/* write back data to dmem */
-		cpu0_wback_dmem = 1;
+		/* invalidate on to dmem, not write back*/
+		cpu0_invalidate_dmem = 1;
+		nxt_state = NOOP;
 	end
 	/* INVALIDATE_1 */
 	default: begin
 		grant_0 = 0;
 		grant_1 = 1;
-		addr_out = addr_in;
+		addr_out = cpu1_addr_in;
 		/* invalidate data in other cpu */
 		cpu0_invalidate_tag = 1;
-		/* write back data to dmem */
-		cpu1_wback_dmem = 1;
+		/* invalidate on to dmem, not write back*/
+		cpu1_invalidate_dmem = 1;
+		nxt_state = NOOP;
 	end
 endcase
 	

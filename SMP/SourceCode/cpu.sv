@@ -14,7 +14,7 @@ module cpu
    output logic write_miss,
    output logic [1:0] block_state,
    input cpu_search,
-   output cpu_search_found,
+   output reg cpu_search_found,
    input [10:0] bus_addr_in,
    input cpu_datasel
   );
@@ -158,7 +158,7 @@ assign DM_we = ~|dst_EX_DM[15:13] & dm_we_EX_DM;	// qualified internal DM we
 	
 end */
 
-/* ripping out state machine logic that controls set_dirty */
+/* ripping out state machine logic that controls set_dirty/wdirty */
 always_ff @ (posedge clk or negedge rst_n) begin
 	if (!rst_n) begin
 		set_dirty = 0;
@@ -181,8 +181,8 @@ end
 // Instantiate Dcache //
 ///////////////////////
 cache Dcache(.clk(clk), .rst_n(rst_n), .addr(dst_EX_DM[12:2]), .wr_data(p0_EX_DM), 
-	.wdirty(set_dirty), .we(DM_we), .re(dm_re_EX_DM), .rd_data(dm_rd_data_EX_DM),
-	.tag_out(dtag), .hit(d_hit), .dirty(dirty_bit));
+	.wdirty(set_dirty), .we(DM_we), .re(dm_re_EX_DM), .cpu_search(cpu_search), .rd_data(dm_rd_data_EX_DM),
+		.tag_out(dtag), .hit(d_hit), .dirty(dirty_bit), .cpu_search_found(cpu_search_found));
 	
 	   
 assign rd_data_EX_DM = (|dst_EX_DM[15:13]) ? mm_rdata : dm_rd_data_EX_DM;
