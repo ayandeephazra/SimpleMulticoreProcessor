@@ -10,13 +10,17 @@ module cpu
    output stall_IM_ID,			// interrupt controller needs this
    output [15:0] mm_wdata,
    /*implement from below*/
+   input cpu_search,
+   input [10:0] BOCI,
+   input grant,
+   input cpu_datasel,
+   input invalidate_from_other_cpu,
    output logic read_miss,
    output logic write_miss,
+   output logic invalidate,
    output logic [1:0] block_state,
-   input cpu_search,
    output reg cpu_search_found,
-   input [10:0] bus_addr_in,
-   input cpu_datasel
+   output logic [10:0] BICO
   );
 
 wire [19:0] instr;				// instruction from IM
@@ -137,54 +141,9 @@ alu iALU(.clk(clk), .rst_n(rst_n), .src0(src0), .src1(src1), .func(alu_func_ID_E
 assign DM_we = ~|dst_EX_DM[15:13] & dm_we_EX_DM;	// qualified internal DM we
 
 
-//dmem_hierarchy iDM(.clk(clk),.rst_n(rst_n),.addr(dst_EX_DM[12:0]),.re(dm_re_EX_DM),
-//                   .we(DM_we),.wrt_data(p0_EX_DM),.rd_data(dm_rd_data_EX_DM),.d_rdy(d_rdy));
+dmem_hierarchy iDM(.clk(clk),.rst_n(rst_n),.addr(dst_EX_DM[12:0]),.re(dm_re_EX_DM),
+                   .we(DM_we),.wrt_data(p0_EX_DM),.rd_data(dm_rd_data_EX_DM),.d_rdy(d_rdy));
 
-/* always @ (*) begin
-	set_dirty = 0;
-	
-	case()
-	
-	IDLE:  begin
-		nxt_state = IDLE;
-		if (dm_re_EX_DM & DM_we & d_hit)
-			set_dirty = 1;
-		end
-	default: begin
-	
-		end
-	
-	endcase
-	
-end */
-
-/* ripping out state machine logic that controls set_dirty/wdirty */
-always_ff @ (posedge clk or negedge rst_n) begin
-	if (!rst_n) begin
-		set_dirty = 0;
-		write_miss = 0;
-		read_miss = 0;
-	end
-	// we = DM_we
-	// we set dirty bit to 1 when it's a we and d cache hit
-	else if (DM_we & d_hit) begin
-		set_dirty = 1;
-		write_miss = 0;
-		read_miss = 0;
-	end
-    // what are the other default cases?
-	else
-		set_dirty = 0;
-end
-				   
-/////////////////////////
-// Instantiate Dcache //
-///////////////////////
-cache Dcache(.clk(clk), .rst_n(rst_n), .addr(dst_EX_DM[12:2]), .wr_data(p0_EX_DM), 
-	.wdirty(set_dirty), .we(DM_we), .re(dm_re_EX_DM), .cpu_search(cpu_search), .rd_data(dm_rd_data_EX_DM),
-		.tag_out(dtag), .hit(d_hit), .dirty(dirty_bit), .cpu_search_found(cpu_search_found));
-	
-	   
 assign rd_data_EX_DM = (|dst_EX_DM[15:13]) ? mm_rdata : dm_rd_data_EX_DM;
 
 ////////////////////////////////////////////
