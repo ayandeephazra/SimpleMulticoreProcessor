@@ -1,13 +1,15 @@
-module dmem_hierarchy(clk,rst_n,addr,re,we,wrt_data,rd_data,d_rdy);
+module dmem_hierarchy(clk,rst_n,addr,re,we,wrt_data,cpu_search,rd_data,d_rdy,cpu_search_found);
 				 
 				 
 input clk,rst_n;
 input [12:0] addr;			// address for data memory
 input re,we;				// read enable and write enable for data memory
 input [15:0] wrt_data;		// write data
+input cpu_search;
 
 output d_rdy;
 output [15:0] rd_data;
+output cpu_search_found;
 
 wire [63:0] u_rd_data;		// data read from unified memory
 wire [63:0] d_line;			// line read from Dcache
@@ -185,7 +187,8 @@ assign u_addr = (evicting) ? {dtag,addr[7:2]} :
 // Instantiate Dcache //
 ///////////////////////
 cache Dcache(.clk(clk), .rst_n(rst_n), .addr(addr[12:2]), .wr_data(Dwrt_line), .wdirty(set_dirty),
-             .we(d_we), .re(d_re), .rd_data(d_line), .tag_out(dtag), .hit(d_hit), .dirty(dirty_bit));
+             .we(d_we), .re(d_re), .cpu_search(cpu_search), .rd_data(d_line), .tag_out(dtag), .hit(d_hit), .dirty(dirty_bit), 
+			 .cpu_search_found(cpu_search_found));
 			 
 assign rd_data = (addr[1:0]==2'b00) ? d_line[15:0] :
                  (addr[1:0]==2'b01) ? d_line[31:16] :

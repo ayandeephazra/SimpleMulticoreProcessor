@@ -1,26 +1,27 @@
 module cpu
-  import common::*;				// import all encoding definitions
+  import common::*;						// import all encoding definitions
   (input clk,rst_n,
    input int_occurred,
    input [15:0] int_vec,
-   inout [15:0] mm_rdata,			// memory mapped read data
+   inout [15:0] mm_rdata,				// memory mapped read data
    output [15:0] mm_addr,
    output mm_re,
    output mm_we,
-   output stall_IM_ID,			// interrupt controller needs this
+   output stall_IM_ID,					// interrupt controller needs this
    output [15:0] mm_wdata,
    /*implement from below*/
-   input cpu_search,
-   input [10:0] BOCI,
-   input grant,
-   input cpu_datasel,
-   input invalidate_from_other_cpu,
-   output logic read_miss,
-   output logic write_miss,
-   output logic invalidate,
-   output logic [1:0] block_state,
-   output reg cpu_search_found,
-   output logic [10:0] BICO
+   input cpu_search,					// search within this cpu's cache with below tag	
+   input [10:0] BOCI,					// Bus Out CPU In
+   input grant,							// did this cpu's requested operation get granted
+   input cpu_datasel,					// where should this cpu get its data from?
+   input invalidate_from_other_cpu,		// other cpu requests an invalidate on "now" stale copy that this guy his
+   output logic read_miss,				// read miss within cpu cache
+   output logic write_miss,				// write miss **
+   output logic invalidate,				// invalidate other cpu's copy
+   output logic [1:0] block_state,		// block state
+   output reg cpu_search_found,			// cpu search within the cache has returned a found value
+   output logic [10:0] BICO,			// Bus In CPU Out
+   output cpu_invalidate_dmem			// invalidate using above tag on dmem 
   );
 
 wire [19:0] instr;				// instruction from IM
@@ -142,7 +143,7 @@ assign DM_we = ~|dst_EX_DM[15:13] & dm_we_EX_DM;	// qualified internal DM we
 
 
 dmem_hierarchy iDM(.clk(clk),.rst_n(rst_n),.addr(dst_EX_DM[12:0]),.re(dm_re_EX_DM),
-                   .we(DM_we),.wrt_data(p0_EX_DM),.rd_data(dm_rd_data_EX_DM),.d_rdy(d_rdy));
+.we(DM_we),.wrt_data(p0_EX_DM), .cpu_search(cpu_search), .rd_data(dm_rd_data_EX_DM),.d_rdy(d_rdy), .cpu_search_found(cpu_search_found));
 
 assign rd_data_EX_DM = (|dst_EX_DM[15:13]) ? mm_rdata : dm_rd_data_EX_DM;
 
