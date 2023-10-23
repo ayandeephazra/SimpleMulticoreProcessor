@@ -1,3 +1,9 @@
+######################################10.25###########################################
+
+1. keep the u_ signals and port both cpu's u_ signal's to the bus and use the statemachine there to decide
+
+######################################10.18###########################################
+
 Current Todos:
 
 set_dirty logic from statemachine rev
@@ -19,5 +25,7 @@ Issues:
 4.  INVALID 			INVALID 			INVALID  --> D.N.E 
 
 5.  INVALID 			INVALID 			VALID    --> BLOCK HAS NEVER BEEN CALLED
+
+2. 
 
 
