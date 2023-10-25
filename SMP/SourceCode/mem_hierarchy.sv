@@ -1,21 +1,29 @@
-module dmem_hierarchy(clk,rst_n,addr,re,we,wrt_data,cpu_search,rd_data,d_rdy,cpu_search_found,
-	u_addr,u_re,u_we,d_line,u_rd_data,u_rdy);
+module dmem_hierarchy(clk,rst_n,addr,re,we,wrt_data,cpu_search,BOCI,cpu_datasel,
+	other_proc_data,rd_data,d_rdy,cpu_search_found,
+	read_miss,write_miss,send_other_proc_data,u_addr,u_re,u_we,d_line,u_rd_data,u_rdy);
 
 input clk,rst_n;
 input [12:0] addr;			// address for data memory
 input re,we;				// read enable and write enable for data memory
 input [15:0] wrt_data;		// write data
 input cpu_search;
+input [12:0] BOCI;
+input [1:0] cpu_datasel;
+input [15:0] other_proc_data;
 
 output d_rdy;
 output [15:0] rd_data;
 output cpu_search_found;
+output reg read_miss;
+output reg write_miss;
+output [15:0] send_other_proc_data;
+/* memory signals */
 output [10:0] u_addr;		// address to unified memory
 output reg u_re; 				// read enable and write enable to unified memory
 output reg u_we;
 output [63:0] d_line;		// line read from Dcache
-output [63:0] u_rd_data;	// data read from unified memory
-output u_rdy;				// indicates unified memory read/write operation finished
+input [63:0] u_rd_data;	// data read from unified memory
+input u_rdy;				// indicates unified memory read/write operation finished
 
 //wire [63:0] u_rd_data;		// data read from unified memory
 //wire [63:0] d_line;			// line read from Dcache
@@ -27,6 +35,7 @@ wire d_hit;					// hit signal from Dcache
 wire dirty_bit;				// dirty bit from Dcache
 //wire [10:0] u_addr;			// address to unified memory
 wire [63:0] Dwrt_line;		// 64-bit data to write to Dcache	
+wire [63:0] other_proc_dline_wire; // other proc BOCI output
 
 //////////////////////////////////////////////
 // registers needed for control logic next //
@@ -67,9 +76,12 @@ always @(*) begin
   evicting = 0;
   d_rdy = 1;			// data from Dcache is ready
   dfill = 0;
+  read_miss = 0;
+  write_miss = 0;
   case (state)
       IDLE : if (re) begin				// if Dcache read
 	           if (!d_hit) begin		// if it is a miss
+			     read_miss = 1;
 			     d_rdy = 0;					// data cache is not ready
 	             ////////////////////////////////////////////////////////
 			     // Either a fill or a replace depending on dirty bit //
@@ -108,6 +120,7 @@ always @(*) begin
 				 // We need to either fill a line, or evict a line //
 				 ///////////////////////////////////////////////////
 				 d_rdy = 0;
+				 write_miss = 1;
 				 if (dirty_bit) begin
 				   ////////////////////////////////////////////////////////////////////////////
 				   // Need to evict this line then read in a new one and write the new data //
@@ -169,15 +182,26 @@ always @(*) begin
   endcase
 	
 end
+/*
+wire [15:0] mux_data;
+b'1x -> src mux, b'00 -> dmem, b'01 -> other proc 
+assign mux_data = (cpu_datasel == 2'b1x)? p0_EX_DM: 
+                     (cpu_datasel == 2'b00)? 16'hffff:
+                     (cpu_datasel == 2'b01)? 16'hffff;
+*/
 
 assign wrt_line = ((addr[1:0]==2'b00)&& d_hit) ? {d_line[63:16],wrt_data} :
                   ((addr[1:0]==2'b01)&& d_hit) ? {d_line[63:32],wrt_data,d_line[15:0]} :
                   ((addr[1:0]==2'b10)&& d_hit) ? {d_line[63:48],wrt_data,d_line[31:0]} :
 				  ((addr[1:0]==2'b11)&& d_hit) ? {wrt_data,d_line[47:0]} :
-				  (addr[1:0]==2'b00) ? {u_rd_data[63:16],wrt_data} :
-				  (addr[1:0]==2'b01) ? {u_rd_data[63:32],wrt_data,u_rd_data[15:0]} :
-				  (addr[1:0]==2'b10) ? {u_rd_data[63:48],wrt_data,u_rd_data[31:0]} :
-				  {wrt_data,u_rd_data[47:0]};
+				  ((cpu_datasel==2'b01) && addr[1:0]==2'b00) ? {u_rd_data[63:16],wrt_data} :
+				  ((cpu_datasel==2'b01) && addr[1:0]==2'b01) ? {u_rd_data[63:32],wrt_data,u_rd_data[15:0]} :
+				  ((cpu_datasel==2'b01) && addr[1:0]==2'b10) ? {u_rd_data[63:48],wrt_data,u_rd_data[31:0]} :
+				  ((cpu_datasel==2'b01) && addr[1:0]==2'b11) ? {wrt_data,u_rd_data[47:0]}:
+				  ((cpu_datasel==2'b00) && addr[1:0]==2'b00) ? {u_rd_data[63:16],other_proc_data} :
+				  ((cpu_datasel==2'b00) && addr[1:0]==2'b01) ? {u_rd_data[63:32],other_proc_data,u_rd_data[15:0]} :
+				  ((cpu_datasel==2'b00) && addr[1:0]==2'b10) ? {u_rd_data[63:48],other_proc_data,u_rd_data[31:0]} :
+				  {other_proc_data,u_rd_data[47:0]};
 
 assign Dwrt_line = (dfill) ? u_rd_data : wrt_line;
 				  
@@ -194,7 +218,12 @@ assign u_addr = (evicting) ? {dtag,addr[7:2]} :
 ///////////////////////
 cache Dcache(.clk(clk), .rst_n(rst_n), .addr(addr[12:2]), .wr_data(Dwrt_line), .wdirty(set_dirty),
              .we(d_we), .re(d_re), .cpu_search(cpu_search), .rd_data(d_line), .tag_out(dtag), .hit(d_hit), .dirty(dirty_bit), 
-			 .cpu_search_found(cpu_search_found));
+			 .cpu_search_found(cpu_search_found), .BOCI(BOCI[12:2]), .other_proc_data_line_wire(other_proc_dline_wire));
+
+assign send_other_proc_data = (BOCI[1:0]==2'b00) ? other_proc_dline_wire[15:0] :
+                 (BOCI[1:0]==2'b01) ? other_proc_dline_wire[31:16] :
+			     (BOCI[1:0]==2'b10) ? other_proc_dline_wire[47:32] :
+			     other_proc_dline_wire[63:48];
 			 
 assign rd_data = (addr[1:0]==2'b00) ? d_line[15:0] :
                  (addr[1:0]==2'b01) ? d_line[31:16] :

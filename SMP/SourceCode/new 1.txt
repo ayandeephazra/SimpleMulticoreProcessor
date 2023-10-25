@@ -1,6 +1,19 @@
 ######################################10.25###########################################
+Successes 
 
-1. keep the u_ signals and port both cpu's u_ signal's to the bus and use the statemachine there to decide
+1. completed read_miss signals, first pass on sending data from one proc to another using cache. 
+setup cache read for this forwarding, exactly like normal cache read.
+
+send data uisng cache read (cache 53-56), 
+receive data and widened multiplex to select into other proc's cache (mem_h 193-204)
+
+Qs
+
+1. memory signals ported from mem_hierarchy should be sent to bus or directly interfaced
+to send to memory? grant? who gets to write in contention case
+
+2.
+
 
 ######################################10.18###########################################
 

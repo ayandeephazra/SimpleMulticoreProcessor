@@ -10,25 +10,27 @@ module cpu
    output stall_IM_ID,					// interrupt controller needs this
    output [15:0] mm_wdata,
    /*implement from below*/
-   input cpu_search,					      // search within this cpu's cache with below tag	
-   input [10:0] BOCI,				      	// Bus Out CPU In
+   /*d*/input cpu_search,					      // search within this cpu's cache with below tag	
+   input [12:0] BOCI,				      	// Bus Out CPU In
    input grant,							        // did this cpu's requested operation get granted
-   input cpu_datasel,					      // where should this cpu get its data from?
+   input [1:0] cpu_datasel,					// where should this cpu get its data from?
    input invalidate_from_other_cpu,	// other cpu requests an invalidate on "now" stale copy that this guy his
+   input [15:0] other_proc_data,
    output logic read_miss,				  // read miss within cpu cache
    output logic write_miss,				  // write miss **
    output logic invalidate,				  // invalidate other cpu's copy
    output logic [1:0] block_state,	// block state
-   output reg cpu_search_found,			// cpu search within the cache has returned a found value
-   output logic [10:0] BICO,			  // Bus In CPU Out
+   /*d*/output reg cpu_search_found,			// cpu search within the cache has returned a found value
+   /*d*/output logic [10:0] BICO,			  // Bus In CPU Out
    output cpu_invalidate_dmem,			// invalidate using above tag on dmem 
+   output [15:0] send_other_proc_data,
    /* mem hierarchy feedback */
    output [10:0] u_addr,        		// address to unified memory
    output reg u_re, 				            // read enable and write enable to unified memory
    output reg u_we,
    output [63:0] d_line,		        // line read from Dcache
-   output [63:0] u_rd_data,	        // data read from unified memory
-   output u_rdy				              // indicates unified memory read/write operation finished
+   input [63:0] u_rd_data,	        // data read from unified memory
+   input u_rdy				              // indicates unified memory read/write operation finished
   );
 
 wire [19:0] instr;				// instruction from IM
@@ -148,11 +150,11 @@ alu iALU(.clk(clk), .rst_n(rst_n), .src0(src0), .src1(src1), .func(alu_func_ID_E
 ////////////////////////////
 assign DM_we = ~|dst_EX_DM[15:13] & dm_we_EX_DM;	// qualified internal DM we
 
-
 dmem_hierarchy iDM(.clk(clk),.rst_n(rst_n),.addr(dst_EX_DM[12:0]),.re(dm_re_EX_DM),
-.we(DM_we),.wrt_data(p0_EX_DM), .cpu_search(cpu_search), .rd_data(dm_rd_data_EX_DM),.d_rdy(d_rdy), 
-.cpu_search_found(cpu_search_found), .u_addr(u_addr), .u_re(u_re), .u_we(u_we), .d_line(d_line),
-.u_rd_data(u_rd_data), .u_rdy(u_rdy));				
+.we(DM_we),.wrt_data(p0_EX_DM), .cpu_search(cpu_search), .BOCI(BOCI), .cpu_datasel(cpu_datasel), 
+.other_proc_data(other_proc_data), .rd_data(dm_rd_data_EX_DM),.d_rdy(d_rdy), 
+.cpu_search_found(cpu_search_found), .read_miss(read_miss), .write_miss(write_miss), .u_addr(u_addr), 
+.u_re(u_re), .u_we(u_we), .d_line(d_line), .u_rd_data(u_rd_data), .u_rdy(u_rdy) );				
 
 assign rd_data_EX_DM = (|dst_EX_DM[15:13]) ? mm_rdata : dm_rd_data_EX_DM;
 

@@ -14,8 +14,8 @@ input write_miss_0; // input from cpu0 that tells the bus it has had a write mis
 input write_miss_1; // input from cpu1 that tells the bus it has had a write miss
 input [1:0] block_state_0;
 input [1:0] block_state_1;
-input [10:0] BICO_0; // FULL ADDRESS
-input [10:0] BICO_1; // FULL ADDRESS
+input [12:0] BICO_0; // FULL ADDRESS
+input [12:0] BICO_1; // FULL ADDRESS
 input logic cpu1_search_found; /*return signal that verifies if BOCI was in cpu0 or not*/
 input logic cpu0_search_found; 
 input invalidate_0; /* input from cpu that tells bus it has had an invalidate */
@@ -23,9 +23,9 @@ input invalidate_1;
 output reg cpu_doing_curr_op; // SEP INTO 2 SIGNALS GRANT1 AND GRANT0
 output reg grant_0;
 output reg grant_1;
-output reg cpu0_datasel; /*if forwarding needed from other cpu, this is high*/
-output reg cpu1_datasel; 
-output reg [10:0] BOCI; /*used in conjunction with below signals to verify existence of valid cache block*/
+output reg [1:0] cpu0_datasel; /*if forwarding needed from other cpu, this is high*/
+output reg [1:0] cpu1_datasel; 
+output reg [12:0] BOCI; /*used in conjunction with below signals to verify existence of valid cache block*/
 output reg cpu1_inv_from_cpu0; /* if a shared block is written to, then the other cpu must invalidate it's copy */
 output reg cpu0_inv_from_cpu1;
 /*output reg cpu0_wback_dmem; 
@@ -36,8 +36,8 @@ output reg cpu0_search; /*signal that notifies cpu0 to search its d-cache for a 
 output reg cpu1_search; 
 
 
-localparam SOURCE_DMEM = 1'b0;
-localparam SOURCE_OTHER_PROC = 1'b1;
+localparam SOURCE_DMEM = 2'b00;
+localparam SOURCE_OTHER_PROC = 2'b01;
 localparam BLOCK_STATE_MODIFIED = 2'b00;
 localparam BLOCK_STATE_SHARED = 2'b01;
 localparam BLOCK_STATE_INVALID = 2'b10;
