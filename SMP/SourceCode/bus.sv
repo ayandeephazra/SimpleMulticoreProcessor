@@ -2,7 +2,7 @@ module bus(clk, rst_n, read_miss_0, read_miss_1,
 	write_miss_0, write_miss_1, block_state_0, block_state_1, BICO_0, BICO_1, BOCI,
 	cpu1_search_found, cpu0_search_found, invalidate_0, invalidate_1, cpu_doing_curr_op, 
 	grant_0, grant_1, cpu0_datasel, cpu1_datasel, cpu1_inv_from_cpu0, cpu0_inv_from_cpu1,
-	cpu0_wback_dmem, cpu1_wback_dmem, cpu0_invalidate_dmem, cpu1_invalidate_dmem,
+	cpu0_invalidate_dmem, cpu1_invalidate_dmem,
 	cpu0_search, cpu1_search);
 	
 import common::*;				// import all encoding definitions
@@ -28,8 +28,8 @@ output reg cpu1_datasel;
 output reg [10:0] BOCI; /*used in conjunction with below signals to verify existence of valid cache block*/
 output reg cpu1_inv_from_cpu0; /* if a shared block is written to, then the other cpu must invalidate it's copy */
 output reg cpu0_inv_from_cpu1;
-output reg cpu0_wback_dmem; /*signal the cpu to write new data to dmem*/
-output reg cpu1_wback_dmem;
+/*output reg cpu0_wback_dmem; 
+output reg cpu1_wback_dmem;*/
 output reg cpu0_invalidate_dmem; /* signal the cpu to invalidate data to dmem*/
 output reg cpu1_invalidate_dmem;
 output reg cpu0_search; /*signal that notifies cpu0 to search its d-cache for a valid block ref'd by BOCI*/
@@ -81,8 +81,6 @@ cpu1_datasel = SOURCE_DMEM;
 cpu0_datasel = SOURCE_DMEM;
 cpu1_inv_from_cpu0 = 0;
 cpu0_inv_from_cpu1 = 0;
-cpu0_wback_dmem = 0;
-cpu1_wback_dmem = 0;
 cpu0_invalidate_dmem = 0;
 cpu1_invalidate_dmem = 0;
 
@@ -164,7 +162,7 @@ case (state)
 			BOCI = BICO_0;
 			cpu1_inv_from_cpu0 = 1;
 			/* block written by default on cpu0? */ // invalidate, write back when evict from cache
-			cpu0_wback_dmem = 1;
+			cpu0_invalidate_dmem = 1;
 		end else
 			/*error*/
 			nxt_state = NOOP;
@@ -177,7 +175,7 @@ case (state)
 			BOCI = BICO_1;
 			cpu0_inv_from_cpu1 = 1;
 			/* block written by default on cpu1? */
-			cpu1_wback_dmem = 1;
+			cpu1_invalidate_dmem = 1;
 		end else
 			/*error*/
 			nxt_state = NOOP;

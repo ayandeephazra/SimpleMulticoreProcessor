@@ -24,7 +24,8 @@ module smp();
 				.write_miss(write_miss_0), /*op*/.invalidate(invalidate_0), .block_state(block_state_0),
 					/*ip*/.BOCI(bus_addr_out), /*ip*/.grant(grant_0), /*ip*/.cpu_datasel(cpu0_datasel),
 						/*ip*/.cpu_search(cpu0_search), /*op*/.cpu_search_found(cpu0_search_found),
-							/*op*/.BICO(cpu0_to_bus_addr), .cpu_invalidate_dmem(cpu0_invalidate_dmem));
+							/*op*/.BICO(cpu0_to_bus_addr), .cpu_invalidate_dmem(cpu0_invalidate_dmem),
+								.u_addr(), .u_re(), .u_we(), .d_line(), .u_rd_data(), .u_rdy());
 		
 	///////////////////////////////////
 	/////     INSTANTIATE CPU1    ////
@@ -35,7 +36,8 @@ module smp();
 				.write_miss(write_miss_1), /*op*/.invalidate(invalidate_1), .block_state(block_state_1),
 					/*ip*/.BOCI(bus_addr_out), /*ip*/.grant(grant_1), /*ip*/.cpu_datasel(cpu1_datasel),
 						/*ip*/.cpu_search(cpu1_search), /*op*/.cpu_search_found(cpu1_search_found),
-							/*op*/.BICO(cpu1_to_bus_addr), .cpu_invalidate_dmem(cpu1_invalidate_dmem));
+							/*op*/.BICO(cpu1_to_bus_addr), .cpu_invalidate_dmem(cpu1_invalidate_dmem),
+								.u_addr(), .u_re(), .u_we(), .d_line(), .u_rd_data(), .u_rdy());
 			
 	///////////////////////////////////
 	/////     INSTANTIATE BUS     ////
@@ -48,10 +50,9 @@ module smp();
 						.invalidate_1(invalidate_1), .cpu_doing_curr_op(cpu_curr_op), .grant_0(grant_0), 
 							.grant_1(grant_1), .cpu0_datasel(cpu0_datasel), .cpu1_datasel(cpu1_datasel), 
 								.BOCI(bus_addr_out), .cpu1_inv_from_cpu0(cpu1_inv_from_cpu0),
-									.cpu0_inv_from_cpu1(cpu0_inv_from_cpu1), .cpu0_wback_dmem(), 
-										.cpu1_wback_dmem(), .cpu0_invalidate_dmem(cpu0_invalidate_dmem), 
-											.cpu1_invalidate_dmem(cpu1_invalidate_dmem), 
-												.cpu0_search(cpu0_search), .cpu1_search(cpu1_search));
+									.cpu0_inv_from_cpu1(cpu0_inv_from_cpu1), .cpu0_invalidate_dmem(cpu0_invalidate_dmem), 
+										.cpu1_invalidate_dmem(cpu1_invalidate_dmem), 
+											.cpu0_search(cpu0_search), .cpu1_search(cpu1_search));
 		
 	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(), .re(), .we(), .wdata(), .rd_data(), .rdy());
 endmodule

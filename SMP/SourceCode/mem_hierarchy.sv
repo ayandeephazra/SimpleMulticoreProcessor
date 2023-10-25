@@ -1,6 +1,6 @@
-module dmem_hierarchy(clk,rst_n,addr,re,we,wrt_data,cpu_search,rd_data,d_rdy,cpu_search_found);
-				 
-				 
+module dmem_hierarchy(clk,rst_n,addr,re,we,wrt_data,cpu_search,rd_data,d_rdy,cpu_search_found,
+	u_addr,u_re,u_we,d_line,u_rd_data,u_rdy);
+
 input clk,rst_n;
 input [12:0] addr;			// address for data memory
 input re,we;				// read enable and write enable for data memory
@@ -10,22 +10,28 @@ input cpu_search;
 output d_rdy;
 output [15:0] rd_data;
 output cpu_search_found;
+output [10:0] u_addr;		// address to unified memory
+output reg u_re; 				// read enable and write enable to unified memory
+output reg u_we;
+output [63:0] d_line;		// line read from Dcache
+output [63:0] u_rd_data;	// data read from unified memory
+output u_rdy;				// indicates unified memory read/write operation finished
 
-wire [63:0] u_rd_data;		// data read from unified memory
-wire [63:0] d_line;			// line read from Dcache
+//wire [63:0] u_rd_data;		// data read from unified memory
+//wire [63:0] d_line;			// line read from Dcache
 wire [63:0] wrt_line;		// line to write to Dcache when it is a replacement from itself
 wire [4:0] dtag;			// tag bits from data cache read.  Need this for address formation on evict
 
-wire u_rdy;				    // indicates unified memory read/write operation finished
+//wire u_rdy;				    // indicates unified memory read/write operation finished
 wire d_hit;					// hit signal from Dcache
 wire dirty_bit;				// dirty bit from Dcache
-wire [10:0] u_addr;			// address to unified memory
+//wire [10:0] u_addr;			// address to unified memory
 wire [63:0] Dwrt_line;		// 64-bit data to write to Dcache	
 
 //////////////////////////////////////////////
 // registers needed for control logic next //
 ////////////////////////////////////////////
-reg u_we,u_re;				// read enable and write enable to unified memory
+//reg u_we,u_re;				// read enable and write enable to unified memory
 reg d_we,d_re;				// read enable and write enable to Dcache
 reg set_dirty;				// When writing to Dcache from CPU set the dirty bit
 reg d_rdy;					// data cache read/write is ready.
@@ -198,7 +204,7 @@ assign rd_data = (addr[1:0]==2'b00) ? d_line[15:0] :
 /////////////////////////////////
 // Instantiate unified memory //
 ///////////////////////////////
-d_mem iDMEM(.clk(clk), .rst_n(rst_n), .addr(u_addr), .re(u_re), .we(u_we), .wdata(d_line),
+/*d_mem iDMEM(.clk(clk), .rst_n(rst_n), .addr(u_addr), .re(u_re), .we(u_we), .wdata(d_line),
                      .rd_data(u_rd_data), .rdy(u_rdy));
-					 
+*/					 
 endmodule
