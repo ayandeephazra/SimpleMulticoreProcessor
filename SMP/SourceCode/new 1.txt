@@ -1,8 +1,17 @@
+######################################11.1###########################################
+Solved issues:
+
+new independent cache controller built, mem_hierarchy structure discarded
+
+Open issues:
+
+1. working dirty bit into eviction policy
+
+######################################10.25###########################################
 Open Issues:
 
 1. mm_re is open in both cpu's at top level
 
-######################################10.25###########################################
 Successes 
 
 1. completed read_miss signals, first pass on sending data from one proc to another using cache. 

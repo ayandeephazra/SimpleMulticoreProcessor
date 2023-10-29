@@ -150,13 +150,11 @@ alu iALU(.clk(clk), .rst_n(rst_n), .src0(src0), .src1(src1), .func(alu_func_ID_E
 //////////////////////////////
 // Instantiate data memory //
 ////////////////////////////
-assign DM_we = ~|dst_EX_DM[15:13] & dm_we_EX_DM;	// qualified internal DM we
+assign DM_we = ~|dst_EX_DM[15:13] & dm_we_EX_DM;	// qualified internal DM we		
 
-dmem_hierarchy iDM(.clk(clk),.rst_n(rst_n),.addr(dst_EX_DM[12:0]),.re(dm_re_EX_DM),
-.we(DM_we),.wrt_data(p0_EX_DM), .cpu_search(cpu_search), .BOCI(BOCI), .cpu_datasel(cpu_datasel), 
-.other_proc_data(other_proc_data), .rd_data(dm_rd_data_EX_DM),.d_rdy(d_rdy), 
-.cpu_search_found(cpu_search_found), .read_miss(read_miss), .write_miss(write_miss), .u_addr(u_addr), 
-.u_re(u_re), .u_we(u_we), .d_line(d_line), .u_rd_data(u_rd_data), .u_rdy(u_rdy) );				
+cache_controller iCC0(.clk(clk), .rst_n(rst_n), .addr(dst_EX_DM[12:0]), .wr_data(p0_EX_DM), .we(DM_we), .re(dm_re_EX_DM),
+.cpu_search(cpu_search), .BOCI(BOCI), .rd_data(dm_rd_data_EX_DM), .cpu_search_found(cpu_search_found),
+.send_other_proc_data(send_other_proc_data), .read_miss(read_miss), .write_miss(write_miss), .invalidate(invalidate));
 
 assign rd_data_EX_DM = (|dst_EX_DM[15:13]) ? mm_rdata : dm_rd_data_EX_DM;
 

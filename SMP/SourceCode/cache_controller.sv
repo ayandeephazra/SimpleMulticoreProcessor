@@ -1,7 +1,7 @@
-/*cache_controller iCC0(.clk(clk), .rst_n(rst_n), .addr(dst_EX_DM), .wr_data(p0_EX_DM), .we(DM_we),
-	.re(dm_re_EX_DM), .cpu_search(cpu_search), .rd_data(dm_rd_data_EX_DM),
-.tag_out(dtag), .hit(dhit), .dirty(dirty_bit), .cpu_search_found(cpu_search_found)); */
-module cache_controller(
+
+module cache_controller
+    import common::*;				// import all encoding definitions
+	(
 	input clk,
 	input rst_n,
 	input [12:0] addr,
@@ -9,31 +9,87 @@ module cache_controller(
 	input we,
 	input re,
 	input cpu_search,
-	output [63:0] rd_data,
-	output [4:0] tag_out,
-	output hit,
-	output dirty,
+	input [10:0] BOCI,
+	output [15:0] rd_data,
+
+	//output dirty,
 	output cpu_search_found	
+	output [15:0] send_other_proc_data;
+	output reg read_miss,
+	output reg write_miss,
+	output reg invalidate
 	);
 	
 	wire [63:0] d_line;			// line read from Dcache
 	wire [63:0] wrt_line;		// line to write to Dcache when it is a replacement from itself
-	logic set_dirty;
-	/* ripping out state machine logic that controls set_dirty/wdirty */
-	always_ff @ (posedge clk or negedge rst_n) begin
-		if (!rst_n) begin
-			set_dirty = 0;
-		end
-		// we = DM_we
-		// we set dirty bit to 1 when it's a we and d cache hit
-		else if (we & hit) begin
-			set_dirty = 1;
-		end
-		// what are the other default cases?
+	wire dirty;
+	//logic set_dirty;
+	blk_state_t wstate;
+	blk_state_t rstate;
+	
+	typedef enum reg [1:0] {IDLE, READ, WRITE} state_t;
+	state_t state, nxt_state;
+	
+	always_ff @ (posedge clk, negedge rst_n) begin
+		if (rst_n) 
+			state <= IDLE;
 		else
-			set_dirty = 0;
+			state <= nxt_state;
 	end
-				 
+	
+	always_comb begin
+		read_miss = 0;
+		write_miss = 0;
+		invalidate = 0;
+		wstate = rstate;
+		nxt_state = IDLE;
+		case (state) 
+			IDLE: begin
+				if (we) 
+					nxt_state = WRITE;
+				else if (re)
+					nxt_state = READ;
+				else
+					nxt_state = IDLE;
+			end
+			READ: begin
+				nxt_state = IDLE;
+				if(!hit) begin
+					// read miss only possible if the block is invalid 
+					if(blk_state_t'(rstate)==INVALID) begin
+						wstate = SHARED;
+						read_miss = 1;
+					end else
+					// not possible by definition
+						nxt_state = IDLE;
+				// hit in read situation, we continue on to IDLE to look for new signals
+				end else
+					nxt_state = IDLE;
+			
+				end
+			default: begin // WRITE state
+				nxt_state = IDLE;
+				if(!hit) begin
+					
+					if(blk_state_t'(rstate)==INVALID) begin
+					// write miss only possible if the block is invalid 
+						wstate = MODIFIED;
+						write_miss = 1;
+					end else if (blk_state_t'(rstate)==SHARED) begin
+						wstate = MODIFIED;
+						invalidate = 1;
+					end else
+					// not possible by definition
+						nxt_state = IDLE;
+				// hit in write situation, we continue on to IDLE to look for new signals
+				end else
+					nxt_state = IDLE;
+			end
+			
+			end
+		endcase
+	end
+		 
 	assign wrt_line = ((addr[1:0]==2'b00)&& hit) ? {d_line[63:16],wr_data} :
                   ((addr[1:0]==2'b01)&& hit) ? {d_line[63:32],wr_data,d_line[15:0]} :
                   ((addr[1:0]==2'b10)&& hit) ? {d_line[63:48],wr_data,d_line[31:0]} :
@@ -45,11 +101,16 @@ module cache_controller(
 			     (addr[1:0]==2'b10) ? d_line[47:32] :
 			     d_line[63:48];
 				 
+	assign send_other_proc_data = (BOCI[1:0]==2'b00) ? other_proc_dline_wire[15:0] :
+                 (BOCI[1:0]==2'b01) ? other_proc_dline_wire[31:16] :
+			     (BOCI[1:0]==2'b10) ? other_proc_dline_wire[47:32] :
+			     other_proc_dline_wire[63:48];				 
+
 	/////////////////////////
 	// Instantiate Dcache //
 	///////////////////////
-	cache Dcache(.clk(clk), .rst_n(rst_n), .addr(addr[12:2]), .wr_data(wrt_line), 
-		.wdirty(set_dirty), .we(we), .re(re), .cpu_search(cpu_search), .rd_data(d_line),
-			.tag_out(tag_out), .hit(hit), .dirty(dirty), .cpu_search_found(cpu_search_found));
+	msi_cache Dcache(.clk(clk), .rst_n(rst_n), .addr(addr[12:2]), .wr_data(wrt_line), 
+		.wstate(wstate), .we(we), .re(re), .cpu_search(cpu_search), .BOCI(BOCI), .hit(hit), .dirty(dirty), .rstate(rstate), .rd_data(d_line),
+		.tag_out(tag_out), .cpu_search_found(cpu_search_found), .other_proc_data_line_wire(other_proc_data_line_wire));
 endmodule
 

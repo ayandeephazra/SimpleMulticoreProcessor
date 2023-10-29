@@ -19,7 +19,7 @@ package common;
       WRITE_MISS_1, INVALIDATE_0, INVALIDATE_1} bus_op_t;
   
   /// Cache Block State ///
-  typedef enum logic [1:0] {MODIFIED, SHARED, INVALID} cache_block_state_t;
+  typedef enum logic [1:0] {INVALID, SHARED, MODIFIED} blk_state_t;
   
   localparam int0vec = 16'h0010;
   localparam int1vec = 16'h0020;
