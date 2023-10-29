@@ -139,6 +139,7 @@ case (state)
 	READ_MISS_0: begin		
 		grant_0 = 1;
 		grant_1 = 0;
+		BOCI = BICO_0;
 		if(cpu1_search_found)// make data available for 2 cycles at least
 			cpu0_datasel = SOURCE_OTHER_PROC; // 1 is other processor, 0 is bus
 		else 
@@ -148,6 +149,7 @@ case (state)
 	READ_MISS_1: begin
 	    grant_0 = 0;
 		grant_1 = 1;
+		BOCI = BICO_1;
 		if(cpu0_search_found)// make data available for 2 cycles at least
 			cpu1_datasel = SOURCE_OTHER_PROC; // 1 is other processor, 0 is bus
 		else 
@@ -157,20 +159,22 @@ case (state)
 	WRITE_MISS_0: begin
 		grant_0 = 1;
 		grant_1 = 0;
-		if(block_state_0==BLOCK_STATE_INVALID) begin
+		if(block_state_0==BLOCK_STATE_SHARED) begin
 			/* invalidate on active copy on cpu1, write to block on cpu0 with addr, write back to dmem*/
 			BOCI = BICO_0;
 			cpu1_inv_from_cpu0 = 1;
 			/* block written by default on cpu0? */ // invalidate, write back when evict from cache
 			cpu0_invalidate_dmem = 1;
-		end else
+		end else if (block_state_0==BLOCK_STATE_MODIFIED) begin
+			/*BOCI = BICO_0;*/
+		end else 
 			/*error*/
 			nxt_state = NOOP;
 	end
 	WRITE_MISS_1: begin
 		grant_0 = 0;
 		grant_1 = 1;
-		if(block_state_1==BLOCK_STATE_INVALID) begin
+		if(block_state_1==BLOCK_STATE_SHARED) begin
 			/* invalidate on active copy on cpu0, write to block on cpu1 with addr, write back to dmem*/
 			BOCI = BICO_1;
 			cpu0_inv_from_cpu1 = 1;

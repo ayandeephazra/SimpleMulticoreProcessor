@@ -33,6 +33,8 @@ module cpu
    input u_rdy				              // indicates unified memory read/write operation finished
   );
 
+parameter FNAME = "instr.hex";
+
 wire [19:0] instr;				// instruction from IM
 wire [14:0] instr_ID_EX;		// immediate bus
 wire [15:0] src0,src1;			// operand busses into ALU
@@ -98,7 +100,7 @@ assign iaddr = (movc_instr_EX_DM) ? dst_EX_DM : pc;
 /////////////////////////////////////
 // Instantiate instruction memory //
 ///////////////////////////////////
-IM iIM(.clk(clk), .addr(iaddr[12:0]), .instr(instr));
+IM #(FNAME) iIM(.clk(clk), .addr(iaddr[12:0]), .instr(instr));
 
 //////////////////////////////////////////////
 // Instantiate register instruction decode //
@@ -141,7 +143,7 @@ src_mux ISRCMUX(.clk(clk), .src0sel_ID_EX(src0sel_ID_EX), .src1sel_ID_EX(src1sel
 alu iALU(.clk(clk), .rst_n(rst_n), .src0(src0), .src1(src1), .func(alu_func_ID_EX),
          .int_occurred(int_occurred_IM_ID), .rti_instr(rti_EX_DM), .update_all(update_all_ID_EX),
 		 .update_nz(update_nz_ID_EX), .shamt(instr_ID_EX[3:0]), .dst(dst_ID_EX), 
-         .dst_EX_DM(dst_EX_DM), .MULH_EX_DM(MULH_EX_DM), .negflag_EX_DM(negflag_EX_DM),
+     .dst_EX_DM(dst_EX_DM), .MULH_EX_DM(MULH_EX_DM), .negflag_EX_DM(negflag_EX_DM),
 		 .zeroflag_EX_DM(zeroflag_EX_DM), .byp_NZ_EX_DM(byp_NZ_EX_DM), .PSW_EX_DM(PSW_EX_DM),
 		 .stall_EX_DM(stall_EX_DM));	
 

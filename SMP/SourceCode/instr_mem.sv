@@ -1,5 +1,8 @@
 module IM(clk,addr,instr);
 
+parameter FNAME = "instr.hex";
+string path;
+
 input clk;
 input [12:0] addr;
 
@@ -14,7 +17,8 @@ always @(negedge clk)
     instr <= instr_mem[addr];
 
 initial begin
-  $readmemh("C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/instr.hex",instr_mem);
+  path = {"C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/", FNAME};
+  $readmemh(path,instr_mem);
 end
 
 endmodule

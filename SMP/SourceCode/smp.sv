@@ -1,6 +1,17 @@
 module smp();
 
 	wire clk, rst_n;
+	
+	wire [15:0] mm_rdata_0, mm_addr_0, mm_wdata_0;
+	wire mm_re_0, mm_we_0;
+	wire int_occurred_0;
+	wire [15:0] int_vec_0;
+
+	wire [15:0] mm_rdata_1, mm_addr_1, mm_wdata_1;
+	wire mm_re_1, mm_we_1;
+	wire int_occurred_1;
+	wire [15:0] int_vec_1;
+
 	wire read_miss_0, write_miss_0;
 	wire read_miss_1, write_miss_1; 
 	logic [1:0] block_state_0, block_state_1;
@@ -19,8 +30,8 @@ module smp();
 	///////////////////////////////////
 	/////     INSTANTIATE CPU0    ////
 	/////////////////////////////////
-	cpu iCPU0(.clk(clk), .rst_n(rst_n), .int_occurred(), .int_vec(), .mm_rdata(),			
-		.mm_addr(), .mm_re(), .mm_we(), .stall_IM_ID(),	.mm_wdata(), 
+	cpu #("instr0.hex") iCPU0(.clk(clk), .rst_n(rst_n), .int_occurred(int_occurred_0), .int_vec(int_vec_0), .mm_rdata(mm_rdata_0),			
+		.mm_addr(mm_addr_0), .mm_re(mm_re_0), .mm_we(mm_we_0), .stall_IM_ID(stall_IM_ID_0), .mm_wdata(mm_wdata_0), 
 			.invalidate_from_other_cpu(cpu0_inv_from_cpu1), .other_proc_data(cpu1_0), .read_miss(read_miss_0), 
 				.write_miss(write_miss_0), /*op*/.invalidate(invalidate_0), .block_state(block_state_0),
 					/*ip*/.BOCI(bus_addr_out), /*ip*/.grant(grant_0), /*ip*/.cpu_datasel(cpu0_datasel),
@@ -32,8 +43,8 @@ module smp();
 	///////////////////////////////////
 	/////     INSTANTIATE CPU1    ////
 	/////////////////////////////////
-	cpu iCPU1(.clk(clk), .rst_n(rst_n), .int_occurred(), .int_vec(), .mm_rdata(),			
-		.mm_addr(), .mm_re(), .mm_we(), .stall_IM_ID(),	.mm_wdata(), 
+	cpu #("instr1.hex") iCPU1(.clk(clk), .rst_n(rst_n), .int_occurred(int_occurred_1), .int_vec(int_vec_1), .mm_rdata(mm_rdata_1),			
+		.mm_addr(mm_addr_1), .mm_re(mm_re_0), .mm_we(mm_we_1), .stall_IM_ID(stall_IM_ID_1), .mm_wdata(mm_wdata_1), 
 			.invalidate_from_other_cpu(cpu1_inv_from_cpu0), .other_proc_data(cpu0_1), .read_miss(read_miss_1), 
 				.write_miss(write_miss_1), /*op*/.invalidate(invalidate_1), .block_state(block_state_1),
 					/*ip*/.BOCI(bus_addr_out), /*ip*/.grant(grant_1), /*ip*/.cpu_datasel(cpu1_datasel),
@@ -58,4 +69,19 @@ module smp();
 											.cpu0_search(cpu0_search), .cpu1_search(cpu1_search));
 		
 	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(), .re(), .we(), .wdata(), .rd_data(), .rdy());
+
+	///////////////////////////////////////
+    // Instantiate interrupt controller //
+  	/////////////////////////////////////
+  	intCntrl iINT0(.clk(clk),.rst_n(rst_n),.int_src({2'b00,tmr_ov,fft_buff_vld}),
+                .stall_IM_ID(stall_IM_ID_0),.mm_addr(mm_addr_0),
+			    .mm_we(mm_we_0),.mm_wdata(mm_wdata_0),
+			    .mm_rdata(mm_rdata_0),.int_occurred(int_occurred_0),
+			    .int_vec(int_vec_0));
+
+	intCntrl iINT1(.clk(clk),.rst_n(rst_n),.int_src({2'b00,tmr_ov,fft_buff_vld}),
+                .stall_IM_ID(stall_IM_ID_1),.mm_addr(mm_addr_1),
+			    .mm_we(mm_we_1),.mm_wdata(mm_wdata_1),
+			    .mm_rdata(mm_rdata_1),.int_occurred(int_occurred_1),
+			    .int_vec(int_vec_1));
 endmodule
