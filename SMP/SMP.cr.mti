@@ -13,13 +13,6 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	cpu
 
-} {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/cache.v} {1 {vlog -work work -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/cache.v}
-Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module cache
-
-Top level modules:
-	cache
-
 } {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/src_mux.sv} {1 {vlog -work work -sv -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/src_mux.sv}
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
 -- Compiling module src_mux
@@ -64,20 +57,6 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	dst_mux
 
-} {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/mem_hierarchy.sv} {1 {vlog -work work -sv -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/mem_hierarchy.sv}
-Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module dmem_hierarchy
-
-Top level modules:
-	dmem_hierarchy
-
-} {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/instr_mem.sv} {1 {vlog -work work -sv -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/instr_mem.sv}
-Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module IM
-
-Top level modules:
-	IM
-
 } {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/intCntrl.sv} {1 {vlog -work work -sv -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/intCntrl.sv}
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
 -- Compiling module intCntrl
@@ -94,12 +73,12 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	spart_split_bus
 
-} {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/cache_controller.sv} {1 {vlog -work work -sv -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/cache_controller.sv}
+} {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/instr_mem.sv} {1 {vlog -work work -sv -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/instr_mem.sv}
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module cache_controller
+-- Compiling module IM
 
 Top level modules:
-	cache_controller
+	IM
 
 } {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/br_bool.sv} {1 {vlog -work work -sv -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/br_bool.sv}
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016

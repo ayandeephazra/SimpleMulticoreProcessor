@@ -13,8 +13,8 @@ module cache_controller
 	output [15:0] rd_data,
 
 	//output dirty,
-	output cpu_search_found	
-	output [15:0] send_other_proc_data;
+	output cpu_search_found,
+	output [15:0] send_other_proc_data,
 	output reg read_miss,
 	output reg write_miss,
 	output reg invalidate
@@ -23,6 +23,8 @@ module cache_controller
 	wire [63:0] d_line;			// line read from Dcache
 	wire [63:0] wrt_line;		// line to write to Dcache when it is a replacement from itself
 	wire dirty;
+	wire hit;
+	wire [63:0] other_proc_data_line_wire;
 	//logic set_dirty;
 	blk_state_t wstate;
 	blk_state_t rstate;
@@ -45,48 +47,44 @@ module cache_controller
 		nxt_state = IDLE;
 		case (state) 
 			IDLE: begin
-				if (we) 
-					nxt_state = WRITE;
-				else if (re)
-					nxt_state = READ;
-				else
+				if (we) begin
+					if(!hit) begin
+						if(blk_state_t'(rstate)==INVALID) begin
+						// write miss only possible if the block is invalid 
+							wstate = MODIFIED;
+							write_miss = 1;
+						end else if (blk_state_t'(rstate)==SHARED) begin
+							wstate = MODIFIED;
+							invalidate = 1;
+						end else
+						// not possible by definition
+							nxt_state = IDLE;
+					// hit in write situation, we continue on to IDLE to look for new signals
+					end else
+						nxt_state = IDLE;
+				end else if (re) begin // if Dcache read
+					if(!hit) begin
+					// read miss only possible if the block is invalid 
+						if(blk_state_t'(rstate)==INVALID) begin
+							wstate = SHARED;
+							read_miss = 1;
+						end else
+							// not possible by definition
+								nxt_state = IDLE;
+							// hit in read situation, we continue on to IDLE to look for new signals
+					end 
+				end else
 					nxt_state = IDLE;
 			end
 			READ: begin
 				nxt_state = IDLE;
-				if(!hit) begin
-					// read miss only possible if the block is invalid 
-					if(blk_state_t'(rstate)==INVALID) begin
-						wstate = SHARED;
-						read_miss = 1;
-					end else
-					// not possible by definition
-						nxt_state = IDLE;
-				// hit in read situation, we continue on to IDLE to look for new signals
-				end else
-					nxt_state = IDLE;
-			
+				
 				end
 			default: begin // WRITE state
 				nxt_state = IDLE;
-				if(!hit) begin
-					
-					if(blk_state_t'(rstate)==INVALID) begin
-					// write miss only possible if the block is invalid 
-						wstate = MODIFIED;
-						write_miss = 1;
-					end else if (blk_state_t'(rstate)==SHARED) begin
-						wstate = MODIFIED;
-						invalidate = 1;
-					end else
-					// not possible by definition
-						nxt_state = IDLE;
-				// hit in write situation, we continue on to IDLE to look for new signals
-				end else
-					nxt_state = IDLE;
+				
 			end
-			
-			end
+
 		endcase
 	end
 		 
@@ -101,10 +99,10 @@ module cache_controller
 			     (addr[1:0]==2'b10) ? d_line[47:32] :
 			     d_line[63:48];
 				 
-	assign send_other_proc_data = (BOCI[1:0]==2'b00) ? other_proc_dline_wire[15:0] :
-                 (BOCI[1:0]==2'b01) ? other_proc_dline_wire[31:16] :
-			     (BOCI[1:0]==2'b10) ? other_proc_dline_wire[47:32] :
-			     other_proc_dline_wire[63:48];				 
+	assign send_other_proc_data = (BOCI[1:0]==2'b00) ? other_proc_data_line_wire[15:0] :
+                 (BOCI[1:0]==2'b01) ? other_proc_data_line_wire[31:16] :
+			     (BOCI[1:0]==2'b10) ? other_proc_data_line_wire[47:32] :
+			     other_proc_data_line_wire[63:48];				 
 
 	/////////////////////////
 	// Instantiate Dcache //
