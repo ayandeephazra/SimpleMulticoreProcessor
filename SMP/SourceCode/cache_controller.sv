@@ -10,14 +10,20 @@ module cache_controller
 	input re,
 	input cpu_search,
 	input [10:0] BOCI,
+	input [15:0] other_proc_data,
+	input grant,
+	input u_rdy,
+	
+	
 	output [15:0] rd_data,
-
 	//output dirty,
 	output cpu_search_found,
 	output [15:0] send_other_proc_data,
 	output reg read_miss,
 	output reg write_miss,
-	output reg invalidate
+	output reg invalidate,
+	output reg u_we,
+	output reg u_re
 	);
 	
 	wire [63:0] d_line;			// line read from Dcache
@@ -25,11 +31,12 @@ module cache_controller
 	wire dirty;
 	wire hit;
 	wire [63:0] other_proc_data_line_wire;
+	reg evicting;
 	//logic set_dirty;
 	blk_state_t wstate;
 	blk_state_t rstate;
 	
-	typedef enum reg [1:0] {IDLE, READ, WRITE} state_t;
+	typedef enum reg [2:0] {IDLE, READ, WRITE, R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
 	state_t state, nxt_state;
 	
 	always_ff @ (posedge clk, negedge rst_n) begin
@@ -44,10 +51,13 @@ module cache_controller
 		write_miss = 0;
 		invalidate = 0;
 		wstate = rstate;
+		evicting = 0;
+		u_we = 0;
+		u_re = 0;
 		nxt_state = IDLE;
 		case (state) 
 			IDLE: begin
-				if (we) begin
+				if (we) begin  // if Dcache write
 					if(!hit) begin
 						if(blk_state_t'(rstate)==INVALID) begin
 						// write miss only possible if the block is invalid 
@@ -60,17 +70,35 @@ module cache_controller
 						// not possible by definition
 							nxt_state = IDLE;
 					// hit in write situation, we continue on to IDLE to look for new signals
-					end else
-						nxt_state = IDLE;
+					end else begin
+						if (dirty) begin
+				   			////////////////////////////////////////////////////////////////////////////
+				   			// Need to evict this line then read in a new one and write the new data //
+				   			//////////////////////////////////////////////////////////////////////////
+				   			evicting = 1;
+				   			nxt_state = W_EVICT;
+				   			//u_we = 1;				// start the write to unified
+				 		end else begin
+				   			//////////////////////////////////////////////////////////////////
+				   			// Need to read a new line from unified and write the new data //
+				   			////////////////////////////////////////////////////////////////
+				   			nxt_state = W_READMEM;
+				 		end
+					end
 				end else if (re) begin // if Dcache read
 					if(!hit) begin
-					// read miss only possible if the block is invalid 
-						if(blk_state_t'(rstate)==INVALID) begin
+						if (dirty) begin
+							evicting = 1;
+			       			nxt_state = R_EVICT;
+			       			//u_we = 1;
+						// read miss only possible if the block is invalid 
+						end else if(blk_state_t'(rstate)==INVALID) begin
 							wstate = SHARED;
 							read_miss = 1;
+							nxt_state = IDLE;
 						end else
 							// not possible by definition
-								nxt_state = IDLE;
+								nxt_state = R_READMEM;
 							// hit in read situation, we continue on to IDLE to look for new signals
 					end 
 				end else
@@ -80,9 +108,58 @@ module cache_controller
 				nxt_state = IDLE;
 				
 				end
-			default: begin // WRITE state
+			WRITE: begin // WRITE state
 				nxt_state = IDLE;
 				
+			end
+			R_EVICT: begin
+				/* stay in this state till dmem is free then write */
+				if (!u_rdy)
+					nxt_state = R_EVICT;
+				else if (u_rdy & grant) begin
+					nxt_state = IDLE;
+					u_we = 1;
+				end else
+					nxt_state = IDLE;
+				
+			end
+			W_EVICT: begin
+				/* stay in this state till dmem is free then write */
+				if (!u_rdy)
+					nxt_state = W_EVICT;
+				else if (u_rdy & grant) begin
+					nxt_state = IDLE;
+					u_we = 1;
+				end else
+					nxt_state = IDLE;
+			end
+			W_READMEM: begin
+				u_re = 1;
+			    d_we = u_rdy;
+			    d_re = 0;
+				if (!u_rdy)
+					nxt_state = W_READMEM;
+				else if (u_rdy & grant) begin
+					nxt_state = IDLE;
+					u_re = 1;
+				end else
+					nxt_state = IDLE;
+				
+			end
+			R_READMEM: begin
+				u_re = 1;
+			    d_we = u_rdy;
+			    d_re = 0;
+				if (!u_rdy)
+					nxt_state = R_READMEM;
+				else if (u_rdy & grant) begin
+					nxt_state = IDLE;
+					u_re = 1;
+				end else
+					nxt_state = IDLE;
+			end
+			default: begin
+			
 			end
 
 		endcase

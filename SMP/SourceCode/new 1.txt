@@ -1,11 +1,13 @@
 ######################################11.1###########################################
 Solved issues:
+1. working dirty bit into eviction policy
 
 new independent cache controller built, mem_hierarchy structure discarded
 
 Open issues:
+1. dfill, set_dirty logic resolving, u signals resolve to main memory
+2. testbench for read_miss
 
-1. working dirty bit into eviction policy
 
 ######################################10.25###########################################
 Open Issues:

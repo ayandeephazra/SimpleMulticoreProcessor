@@ -27,6 +27,8 @@ module smp();
 	wire cpu0_invalidate_dmem, cpu1_invalidate_dmem;
 	wire [15:0] cpu0_1, cpu1_0; // data forwarding between cpus
 	
+	wire dmem_rdy;
+	
 	///////////////////////////////////
 	/////     INSTANTIATE CPU0    ////
 	/////////////////////////////////
@@ -38,7 +40,7 @@ module smp();
 						/*ip*/.cpu_search(cpu0_search), /*op*/.cpu_search_found(cpu0_search_found),
 							/*op*/.BICO(cpu0_to_bus_addr), .cpu_invalidate_dmem(cpu0_invalidate_dmem),
 								.send_other_proc_data(cpu0_1),
-								.u_addr(), .u_re(), .u_we(), .d_line(), .u_rd_data(), .u_rdy());
+								.u_addr(), .u_re(), .u_we(), .d_line(), .u_rd_data(), .u_rdy(dmem_rdy));
 		
 	///////////////////////////////////
 	/////     INSTANTIATE CPU1    ////
@@ -51,7 +53,7 @@ module smp();
 						/*ip*/.cpu_search(cpu1_search), /*op*/.cpu_search_found(cpu1_search_found),
 							/*op*/.BICO(cpu1_to_bus_addr), .cpu_invalidate_dmem(cpu1_invalidate_dmem),
 								.send_other_proc_data(cpu1_0),
-								.u_addr(), .u_re(), .u_we(), .d_line(), .u_rd_data(), .u_rdy());
+								.u_addr(), .u_re(), .u_we(), .d_line(), .u_rd_data(), .u_rdy(dmem_rdy));
 			
 	///////////////////////////////////
 	/////     INSTANTIATE BUS     ////
@@ -68,7 +70,7 @@ module smp();
 										.cpu1_invalidate_dmem(cpu1_invalidate_dmem), 
 											.cpu0_search(cpu0_search), .cpu1_search(cpu1_search));
 		
-	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(), .re(), .we(), .wdata(), .rd_data(), .rdy());
+	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(), .re(), .we(), .wdata(), .rd_data(), .rdy(dmem_rdy));
 
 	///////////////////////////////////////
     // Instantiate interrupt controller //
