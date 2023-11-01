@@ -34,7 +34,7 @@ module smp(
 	///////////////////////////////////
 	/////  CPU0 - DMEM INTERFACE  ////
 	/////////////////////////////////
-	wire [15:0] cpu0_u_addr;
+	wire [10:0] cpu0_u_addr;
 	wire cpu0_u_re;
 	wire cpu0_u_we;
 	wire [63:0] cpu0_d_line;
@@ -42,7 +42,7 @@ module smp(
 	///////////////////////////////////
 	/////  CPU1 - DMEM INTERFACE  ////
 	/////////////////////////////////
-	wire [15:0] cpu1_u_addr;
+	wire [10:0] cpu1_u_addr;
 	wire cpu1_u_re;
 	wire cpu1_u_we;
 	wire [63:0] cpu1_d_line;
@@ -50,6 +50,8 @@ module smp(
 	// common dmem interface
 	wire dmem_rdy;
 	wire [63:0] u_rd_data;
+	
+	reg cpu0_dmem_permission, cpu1_dmem_permission;
 	
 	///////////////////////////////////
 	/////     INSTANTIATE CPU0    ////
@@ -60,9 +62,9 @@ module smp(
 				.write_miss(write_miss_0), /*op*/.invalidate(invalidate_0), .block_state(block_state_0),
 					/*ip*/.BOCI(bus_addr_out), /*ip*/.grant(grant_0), /*ip*/.cpu_datasel(cpu0_datasel),
 						/*ip*/.cpu_search(cpu0_search), /*op*/.cpu_search_found(cpu0_search_found),
-							/*op*/.BICO(cpu0_to_bus_addr), .cpu_invalidate_dmem(cpu0_invalidate_dmem),
-								.send_other_proc_data(cpu0_1), .u_addr(cpu0_u_addr), .u_re(cpu0_u_re),
-								 	.u_we(cpu0_u_we), .d_line(cpu0_d_line), .u_rd_data(u_rd_data), .u_rdy(dmem_rdy));
+							/*op*/.BICO(cpu0_to_bus_addr), .cpu_invalidate_dmem(cpu0_invalidate_dmem), .send_other_proc_data(cpu0_1),
+								 .u_addr(cpu0_u_addr), .u_re(cpu0_u_re), .u_we(cpu0_u_we), .d_line(cpu0_d_line), 
+									.u_rd_data(u_rd_data), .u_rdy(dmem_rdy), .cpu_dmem_permission(cpu0_dmem_permission));
 		
 	///////////////////////////////////
 	/////     INSTANTIATE CPU1    ////
@@ -73,9 +75,9 @@ module smp(
 				.write_miss(write_miss_1), /*op*/.invalidate(invalidate_1), .block_state(block_state_1),
 					/*ip*/.BOCI(bus_addr_out), /*ip*/.grant(grant_1), /*ip*/.cpu_datasel(cpu1_datasel),
 						/*ip*/.cpu_search(cpu1_search), /*op*/.cpu_search_found(cpu1_search_found),
-							/*op*/.BICO(cpu1_to_bus_addr), .cpu_invalidate_dmem(cpu1_invalidate_dmem),
-								.send_other_proc_data(cpu1_0), .u_addr(cpu1_u_addr), .u_re(cpu1_u_re),
-									.u_we(cpu1_u_we), .d_line(cpu1_d_line), .u_rd_data(u_rd_data), .u_rdy(dmem_rdy));
+							/*op*/.BICO(cpu1_to_bus_addr), .cpu_invalidate_dmem(cpu1_invalidate_dmem), .send_other_proc_data(cpu1_0), 
+								.u_addr(cpu1_u_addr), .u_re(cpu1_u_re), .u_we(cpu1_u_we), .d_line(cpu1_d_line), 
+									.u_rd_data(u_rd_data), .u_rdy(dmem_rdy), .cpu_dmem_permission(cpu1_dmem_permission));
 			
 	///////////////////////////////////
 	/////     INSTANTIATE BUS     ////
@@ -93,6 +95,48 @@ module smp(
 											.cpu0_search(cpu0_search), .cpu1_search(cpu1_search));
 		
 	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(), .re(), .we(), .wdata(), .rd_data(), .rdy(dmem_rdy));
+	
+	typedef enum reg [1:0] {IDLE, CPU0, CPU1} state_t;
+	state_t state, nxt_state;
+	
+	always_ff @ (posedge clk, negedge rst_n) begin
+		if (rst_n) 
+			state <= IDLE;
+		else
+			state <= nxt_state;
+	end
+	
+	always_comb begin
+		cpu0_dmem_permission = 0;
+		cpu1_dmem_permission = 0;
+		nxt_state = state;
+		case (state)
+			IDLE: begin
+				if (dmem_rdy) begin
+					if (cpu0_u_we | cpu0_u_re) begin
+						cpu0_dmem_permission = 1;
+						nxt_state = CPU0;
+					end else if (cpu1_u_we | cpu1_u_re) begin
+						cpu1_dmem_permission = 1;
+						nxt_state = CPU1;
+					end else
+						nxt_state = IDLE;
+				end
+				else
+					nxt_state = IDLE;
+			end
+		
+			CPU0: begin
+				nxt_state = IDLE;
+			end
+			
+			// CPU1
+			default: begin
+				nxt_state = IDLE;
+			end
+	
+		endcase
+	end
 
 	///////////////////////////////////////
     // Instantiate interrupt controller //

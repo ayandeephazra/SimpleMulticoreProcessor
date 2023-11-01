@@ -7,6 +7,7 @@ new independent cache controller built, mem_hierarchy structure discarded
 Open issues:
 1. dfill, set_dirty logic resolving, u signals resolve to main memory
 2. testbench for read_miss
+3. mem controls with 2 cpus going into dmem
 
 Deprecated:
 			READ: begin

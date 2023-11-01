@@ -14,7 +14,9 @@ module cache_controller
 	input [15:0] bus_data,
 	input grant,
 	input u_rdy,
+	input [63:0] u_rd_data,
 	input [1:0] cpu_datasel,
+	input reg cpu_dmem_permission,
 	
 	output reg d_rdy,
 	output hit,
@@ -25,10 +27,10 @@ module cache_controller
 	output reg read_miss,
 	output reg write_miss,
 	output reg invalidate,
-	output [10:0] u_addr;
+	output [10:0] u_addr,
 	output reg u_we,
-	output reg u_re
-	output [63:0] d_line;	
+	output reg u_re,
+	output [63:0] d_line
 	);
 	
 	//wire [63:0] d_line;			// line read from Dcache
@@ -123,9 +125,9 @@ module cache_controller
 			R_EVICT: begin
 				/* stay in this state till dmem is free then write */
 				d_rdy = 0;
-				if (!u_rdy)
+				if (!u_rdy | !cpu_dmem_permission)
 					nxt_state = R_EVICT;
-				else if (u_rdy) begin
+				else if (u_rdy & cpu_dmem_permission) begin
 					nxt_state = IDLE;
 					u_we = 1;
 				end else
@@ -135,9 +137,9 @@ module cache_controller
 			W_EVICT: begin
 				/* stay in this state till dmem is free then write */
 				d_rdy = 0;
-				if (!u_rdy)
+				if (!u_rdy | !cpu_dmem_permission)
 					nxt_state = W_EVICT;
-				else if (u_rdy) begin
+				else if (u_rdy & cpu_dmem_permission) begin
 					nxt_state = IDLE;
 					u_we = 1;
 				end else
@@ -148,9 +150,9 @@ module cache_controller
 				u_re = 1;
 			    d_we = u_rdy;
 			    d_re = 0;
-				if (!u_rdy)
+				if (!u_rdy | !cpu_dmem_permission)
 					nxt_state = W_READMEM;
-				else if (u_rdy) begin
+				else if (u_rdy & cpu_dmem_permission) begin
 					nxt_state = IDLE;
 					u_re = 1;
 				end else
@@ -162,9 +164,9 @@ module cache_controller
 				u_re = 1;
 			    d_we = u_rdy;
 			    d_re = 0;
-				if (!u_rdy)
+				if (!u_rdy | !cpu_dmem_permission)
 					nxt_state = R_READMEM;
-				else if (u_rdy) begin
+				else if (u_rdy & cpu_dmem_permission) begin
 					nxt_state = IDLE;
 					u_re = 1;
 				end else
@@ -181,8 +183,16 @@ module cache_controller
                   ((addr[1:0]==2'b01)&& hit) ? {d_line[63:32],wr_data,d_line[15:0]} :
                   ((addr[1:0]==2'b10)&& hit) ? {d_line[63:48],wr_data,d_line[31:0]} :
 				  ((addr[1:0]==2'b11)&& hit) ? {wr_data,d_line[47:0]} :
+				  ((addr[1:0]==2'b00)&& !hit && (cpu_datasel==2'b00)) ? {d_line[63:16], u_rd_data[15:0]} :
+				  ((addr[1:0]==2'b01)&& !hit && (cpu_datasel==2'b00)) ? {d_line[63:32], u_rd_data[31:16], d_line[15:0]} :
+				  ((addr[1:0]==2'b10)&& !hit && (cpu_datasel==2'b00)) ? {d_line[63:48], u_rd_data[47:32], d_line[31:0]} :
+				  ((addr[1:0]==2'b11)&& !hit && (cpu_datasel==2'b00)) ? {u_rd_data[63:48], d_line[47:0]} :
+				  ((addr[1:0]==2'b00)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:16], other_proc_data} :
+				  ((addr[1:0]==2'b01)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:32], other_proc_data, d_line[15:0]} :
+				  ((addr[1:0]==2'b10)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:48], other_proc_data, d_line[31:0]} :
+				  ((addr[1:0]==2'b11)&& !hit && (cpu_datasel==2'b01)) ? {other_proc_data, d_line[47:0]} :
 				  {d_line};
-				  
+		
 	assign rd_data = (addr[1:0]==2'b00) ? d_line[15:0] :
                  (addr[1:0]==2'b01) ? d_line[31:16] :
 			     (addr[1:0]==2'b10) ? d_line[47:32] :
@@ -191,7 +201,10 @@ module cache_controller
 	assign send_other_proc_data = (BOCI[1:0]==2'b00) ? other_proc_data_line_wire[15:0] :
                  (BOCI[1:0]==2'b01) ? other_proc_data_line_wire[31:16] :
 			     (BOCI[1:0]==2'b10) ? other_proc_data_line_wire[47:32] :
-			     other_proc_data_line_wire[63:48];				 
+			     other_proc_data_line_wire[63:48];				
+				 
+				 
+	assign u_addr = addr[12:2];
 
 	/////////////////////////
 	// Instantiate Dcache //
