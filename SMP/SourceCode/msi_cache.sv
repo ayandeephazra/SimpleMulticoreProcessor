@@ -13,7 +13,7 @@ module msi_cache
    output hit,
    output blk_state_t rstate,	// state of block just read
    output [63:0] rd_data,		// 64-bit cache line read out
-   output [4:0] tag_out			// 5-bit tag.  This is needed during evictions
+   output [4:0] tag_out,			// 5-bit tag.  This is needed during evictions
    output reg cpu_search_found,
    output [63:0] other_proc_data_line_wire
   );
@@ -49,10 +49,10 @@ always @(clk or we_filt or negedge rst_n)
 // Model cache read including 4:1 muxing of 16-bit words //
 //////////////////////////////////////////////////////////
 always @(clk or re or addr)
-  if (clk && re)				// read is on clock high
+  if (clk && re) begin				// read is on clock high
     line = mem[addr[5:0]];
   // if the valid bit in address is high, then there is a match
-  if (clk && cpu_search && mem[BOCI[5:0]][70] == 1'b1) begin
+  end else if (clk && cpu_search && (mem[BOCI[5:0]][70] == 1'b1)) begin
 		cpu_search_found = 1;
 		other_proc_data_line = mem[BOCI[5:0]];
   end else

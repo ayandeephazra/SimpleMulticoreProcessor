@@ -17,7 +17,7 @@ always @(negedge clk)
     instr <= instr_mem[addr];
 
 initial begin
-  path = {"C:/Users/EricHoffman/Desktop/EricsNewProcDCache/SourceCode/", FNAME};
+  path = {"C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/", FNAME};
   $readmemh(path,instr_mem);
 end
 

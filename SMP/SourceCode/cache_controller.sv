@@ -14,7 +14,7 @@ module cache_controller
 	input grant,
 	input u_rdy,
 	
-	
+	output hit,
 	output [15:0] rd_data,
 	//output dirty,
 	output cpu_search_found,
@@ -29,9 +29,11 @@ module cache_controller
 	wire [63:0] d_line;			// line read from Dcache
 	wire [63:0] wrt_line;		// line to write to Dcache when it is a replacement from itself
 	wire dirty;
-	wire hit;
+	//wire hit;
 	wire [63:0] other_proc_data_line_wire;
 	reg evicting;
+	reg d_we;
+	reg d_re;
 	//logic set_dirty;
 	blk_state_t wstate;
 	blk_state_t rstate;
@@ -54,10 +56,13 @@ module cache_controller
 		evicting = 0;
 		u_we = 0;
 		u_re = 0;
+		d_we = 0;
+		d_re = re;
 		nxt_state = IDLE;
 		case (state) 
 			IDLE: begin
 				if (we) begin  // if Dcache write
+					d_re = 1;
 					if(!hit) begin
 						if(blk_state_t'(rstate)==INVALID) begin
 						// write miss only possible if the block is invalid 
@@ -71,6 +76,7 @@ module cache_controller
 							nxt_state = IDLE;
 					// hit in write situation, we continue on to IDLE to look for new signals
 					end else begin
+						d_we = 1;
 						if (dirty) begin
 				   			////////////////////////////////////////////////////////////////////////////
 				   			// Need to evict this line then read in a new one and write the new data //
@@ -185,7 +191,7 @@ module cache_controller
 	// Instantiate Dcache //
 	///////////////////////
 	msi_cache Dcache(.clk(clk), .rst_n(rst_n), .addr(addr[12:2]), .wr_data(wrt_line), 
-		.wstate(wstate), .we(we), .re(re), .cpu_search(cpu_search), .BOCI(BOCI), .hit(hit), .dirty(dirty), .rstate(rstate), .rd_data(d_line),
+		.wstate(wstate), .we(d_we), .re(d_re), .cpu_search(cpu_search), .BOCI(BOCI), .hit(hit), .dirty(dirty), .rstate(rstate), .rd_data(d_line),
 		.tag_out(tag_out), .cpu_search_found(cpu_search_found), .other_proc_data_line_wire(other_proc_data_line_wire));
 endmodule
 

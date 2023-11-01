@@ -1,5 +1,6 @@
-module cpu_tb();
+module smp_test();
 
+	
 reg clk,rst_n;
 
 wire [15:0] mm_rdata, mm_addr, mm_wdata;
@@ -14,7 +15,7 @@ initial begin
   rst_n = 0;
   @(negedge clk);
   rst_n = 1;
-  repeat(300) @(posedge clk);
+  repeat(3000000) @(posedge clk);
   
   
   $stop();
