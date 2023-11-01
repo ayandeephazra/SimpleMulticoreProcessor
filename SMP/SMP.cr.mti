@@ -42,6 +42,13 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	rf_mem_blk
 
+} {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv} {1 {vlog -work work -sv -stats=none {C:\Users\Ayan Deep Hazra\Desktop\Repos\SimpleMulticoreProcessor\SMP\smp_test.sv}
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module smp_test
+
+Top level modules:
+	smp_test
+
 } {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/prgm_cntr.sv} {1 {vlog -work work -sv -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/prgm_cntr.sv}
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
 -- Compiling module pc
@@ -86,14 +93,6 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 
 Top level modules:
 	br_bool
-
-} {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/cache_controller.sv} {1 {vlog -work work -sv -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/cache_controller.sv}
-Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module cache_controller
--- Importing package common
-
-Top level modules:
-	cache_controller
 
 } {} {}} {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/rf.sv} {1 {vlog -work work -sv -stats=none {C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/SourceCode/rf.sv}
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016

@@ -11,9 +11,12 @@ module cache_controller
 	input cpu_search,
 	input [10:0] BOCI,
 	input [15:0] other_proc_data,
+	input [15:0] bus_data,
 	input grant,
 	input u_rdy,
+	input [1:0] cpu_datasel,
 	
+	output reg d_rdy,
 	output hit,
 	output [15:0] rd_data,
 	//output dirty,
@@ -22,11 +25,13 @@ module cache_controller
 	output reg read_miss,
 	output reg write_miss,
 	output reg invalidate,
+	output [10:0] u_addr;
 	output reg u_we,
 	output reg u_re
+	output [63:0] d_line;	
 	);
 	
-	wire [63:0] d_line;			// line read from Dcache
+	//wire [63:0] d_line;			// line read from Dcache
 	wire [63:0] wrt_line;		// line to write to Dcache when it is a replacement from itself
 	wire dirty;
 	//wire hit;
@@ -38,7 +43,7 @@ module cache_controller
 	blk_state_t wstate;
 	blk_state_t rstate;
 	
-	typedef enum reg [2:0] {IDLE, READ, WRITE, R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
+	typedef enum reg [2:0] {IDLE, R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
 	state_t state, nxt_state;
 	
 	always_ff @ (posedge clk, negedge rst_n) begin
@@ -58,12 +63,14 @@ module cache_controller
 		u_re = 0;
 		d_we = 0;
 		d_re = re;
+		d_rdy = 1;
 		nxt_state = IDLE;
 		case (state) 
 			IDLE: begin
 				if (we) begin  // if Dcache write
 					d_re = 1;
 					if(!hit) begin
+						d_rdy = 0;
 						if(blk_state_t'(rstate)==INVALID) begin
 						// write miss only possible if the block is invalid 
 							wstate = MODIFIED;
@@ -76,6 +83,7 @@ module cache_controller
 							nxt_state = IDLE;
 					// hit in write situation, we continue on to IDLE to look for new signals
 					end else begin
+						d_rdy = 1;
 						d_we = 1;
 						if (dirty) begin
 				   			////////////////////////////////////////////////////////////////////////////
@@ -93,6 +101,7 @@ module cache_controller
 					end
 				end else if (re) begin // if Dcache read
 					if(!hit) begin
+						d_rdy = 0;
 						if (dirty) begin
 							evicting = 1;
 			       			nxt_state = R_EVICT;
@@ -110,19 +119,13 @@ module cache_controller
 				end else
 					nxt_state = IDLE;
 			end
-			READ: begin
-				nxt_state = IDLE;
-				
-				end
-			WRITE: begin // WRITE state
-				nxt_state = IDLE;
-				
-			end
+
 			R_EVICT: begin
 				/* stay in this state till dmem is free then write */
+				d_rdy = 0;
 				if (!u_rdy)
 					nxt_state = R_EVICT;
-				else if (u_rdy & grant) begin
+				else if (u_rdy) begin
 					nxt_state = IDLE;
 					u_we = 1;
 				end else
@@ -131,21 +134,23 @@ module cache_controller
 			end
 			W_EVICT: begin
 				/* stay in this state till dmem is free then write */
+				d_rdy = 0;
 				if (!u_rdy)
 					nxt_state = W_EVICT;
-				else if (u_rdy & grant) begin
+				else if (u_rdy) begin
 					nxt_state = IDLE;
 					u_we = 1;
 				end else
 					nxt_state = IDLE;
 			end
 			W_READMEM: begin
+				d_rdy = 0;
 				u_re = 1;
 			    d_we = u_rdy;
 			    d_re = 0;
 				if (!u_rdy)
 					nxt_state = W_READMEM;
-				else if (u_rdy & grant) begin
+				else if (u_rdy) begin
 					nxt_state = IDLE;
 					u_re = 1;
 				end else
@@ -153,12 +158,13 @@ module cache_controller
 				
 			end
 			R_READMEM: begin
+				d_rdy = 0;
 				u_re = 1;
 			    d_we = u_rdy;
 			    d_re = 0;
 				if (!u_rdy)
 					nxt_state = R_READMEM;
-				else if (u_rdy & grant) begin
+				else if (u_rdy) begin
 					nxt_state = IDLE;
 					u_re = 1;
 				end else

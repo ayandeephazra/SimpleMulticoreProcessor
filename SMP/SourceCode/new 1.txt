@@ -8,6 +8,17 @@ Open issues:
 1. dfill, set_dirty logic resolving, u signals resolve to main memory
 2. testbench for read_miss
 
+Deprecated:
+			READ: begin
+				d_rdy = 0;
+				nxt_state = IDLE;
+				
+				end
+			WRITE: begin // WRITE state
+				d_rdy = 0;
+				nxt_state = IDLE;
+				
+			end
 
 ######################################10.25###########################################
 Open Issues:

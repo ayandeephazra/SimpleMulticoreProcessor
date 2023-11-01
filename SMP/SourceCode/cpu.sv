@@ -74,7 +74,7 @@ wire byp_NZ_EX_DM;
 wire stall_ID_EX;
 wire stall_EX_DM;
 wire stall_DM_WB;
-
+wire hit; 					// d_cache hit for this cpu
 reg set_dirty;				// When writing to Dcache from CPU set the dirty bit
 wire d_hit;
 wire [4:0] dtag;
@@ -153,8 +153,10 @@ alu iALU(.clk(clk), .rst_n(rst_n), .src0(src0), .src1(src1), .func(alu_func_ID_E
 assign DM_we = ~|dst_EX_DM[15:13] & dm_we_EX_DM;	// qualified internal DM we		
 
 cache_controller iCC0(.clk(clk), .rst_n(rst_n), .addr(dst_EX_DM[12:0]), .wr_data(p0_EX_DM), .we(DM_we), .re(dm_re_EX_DM),
-.cpu_search(cpu_search), .BOCI(BOCI), .other_proc_data(other_proc_data), .grant(grant), .u_rdy(u_rdy), .hit(d_rdy), .rd_data(dm_rd_data_EX_DM), 
-.cpu_search_found(cpu_search_found), .send_other_proc_data(send_other_proc_data), .read_miss(read_miss), .write_miss(write_miss), .invalidate(invalidate));
+.cpu_search(cpu_search), .BOCI(BOCI), .other_proc_data(other_proc_data), .grant(grant), .u_rdy(u_rdy), .d_rdy(d_rdy), .hit(hit), 
+.rd_data(dm_rd_data_EX_DM), 
+.cpu_search_found(cpu_search_found), .send_other_proc_data(send_other_proc_data), .read_miss(read_miss), .write_miss(write_miss), 
+.invalidate(invalidate));
 
 assign rd_data_EX_DM = (|dst_EX_DM[15:13]) ? mm_rdata : dm_rd_data_EX_DM;
 

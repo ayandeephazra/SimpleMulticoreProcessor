@@ -15,7 +15,7 @@ initial begin
   rst_n = 0;
   @(negedge clk);
   rst_n = 1;
-  repeat(3000000) @(posedge clk);
+  repeat(30000) @(posedge clk);
   
   
   $stop();
