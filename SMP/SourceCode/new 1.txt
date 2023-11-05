@@ -1,4 +1,11 @@
+######################################11.8###########################################
+1. write miss functionality in bus sm can just be replaced with cpu search + invalidate state like msi cache's rst_n function
+
 ######################################11.1###########################################
+first
+1. read -> miss -> bus.
+2. we state switch on !d_hit
+
 Solved issues:
 1. working dirty bit into eviction policy
 

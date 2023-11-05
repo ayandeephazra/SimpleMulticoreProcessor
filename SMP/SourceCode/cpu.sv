@@ -11,7 +11,7 @@ module cpu
    output [15:0] mm_wdata,
    /*implement from below*/
    /*d*/input cpu_search,					      // search within this cpu's cache with below tag	
-   input [12:0] BOCI,				      	// Bus Out CPU In
+   input logic [12:0] BOCI,				      	// Bus Out CPU In
    input grant,							        // did this cpu's requested operation get granted
    input [63:0] u_rd_data,	        	// data read from unified memory
    input u_rdy,				              // indicates unified memory read/write operation finished
@@ -24,7 +24,7 @@ module cpu
    output logic invalidate,				  // invalidate other cpu's copy
    output logic [1:0] block_state,		// block state
    /*d*/output reg cpu_search_found,			// cpu search within the cache has returned a found value
-   /*d*/output logic [10:0] BICO,			  // Bus In CPU Out
+   /*d*/output logic [12:0] BICO,			  // Bus In CPU Out
    output cpu_invalidate_dmem,			// invalidate using above tag on dmem 
    output [15:0] send_other_proc_data,
    /* mem hierarchy feedback */
@@ -155,7 +155,8 @@ assign DM_we = ~|dst_EX_DM[15:13] & dm_we_EX_DM;	// qualified internal DM we
 
 cache_controller iCC0(.clk(clk), .rst_n(rst_n), .addr(dst_EX_DM[12:0]), .wr_data(p0_EX_DM), .we(DM_we), .re(dm_re_EX_DM),
 .cpu_search(cpu_search), .BOCI(BOCI), .other_proc_data(other_proc_data), .grant(grant), .u_rdy(u_rdy), .u_rd_data(u_rd_data),
-.cpu_datasel(cpu_datasel), .cpu_dmem_permission(cpu_dmem_permission), .d_rdy(d_rdy), .hit(hit), .rd_data(dm_rd_data_EX_DM), 
+.cpu_datasel(cpu_datasel), .cpu_dmem_permission(cpu_dmem_permission), .invalidate_from_other_cpu(invalidate_from_other_cpu), 
+.d_rdy(d_rdy), .hit(hit), .rd_data(dm_rd_data_EX_DM), 
 .cpu_search_found(cpu_search_found), .send_other_proc_data(send_other_proc_data), .read_miss(read_miss), .write_miss(write_miss), 
 .invalidate(invalidate), .u_addr(u_addr), .u_we(u_we), .u_re(u_re), .d_line(d_line));
 

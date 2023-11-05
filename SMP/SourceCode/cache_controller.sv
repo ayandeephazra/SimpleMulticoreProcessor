@@ -9,7 +9,7 @@ module cache_controller
 	input we,
 	input re,
 	input cpu_search,
-	input [10:0] BOCI,
+	input [12:0] BOCI,
 	input [15:0] other_proc_data,
 	input [15:0] bus_data,
 	input grant,
@@ -17,8 +17,9 @@ module cache_controller
 	input [63:0] u_rd_data,
 	input [1:0] cpu_datasel,
 	input reg cpu_dmem_permission,
+	input invalidate_from_other_cpu,
 	
-	output reg d_rdy,
+	output reg d_rdy,					// data cache ready
 	output hit,
 	output [15:0] rd_data,
 	//output dirty,
@@ -30,7 +31,8 @@ module cache_controller
 	output [10:0] u_addr,
 	output reg u_we,
 	output reg u_re,
-	output [63:0] d_line
+	output [63:0] d_line,
+	output reg [12:0] BICO
 	);
 	
 	//wire [63:0] d_line;			// line read from Dcache
@@ -66,40 +68,56 @@ module cache_controller
 		d_we = 0;
 		d_re = re;
 		d_rdy = 1;
+		BICO = addr;
 		nxt_state = IDLE;
 		case (state) 
 			IDLE: begin
 				if (we) begin  // if Dcache write
-					d_re = 1;
+				
+					d_re = 1; 			// have to read prior to write to check and have fill data
+					
+					// hit in write situation, we continue on to IDLE to look for new signals
 					if(!hit) begin
 						d_rdy = 0;
 						if(blk_state_t'(rstate)==INVALID) begin
 						// write miss only possible if the block is invalid 
 							wstate = MODIFIED;
 							write_miss = 1;
-						end else if (blk_state_t'(rstate)==SHARED) begin
-							wstate = MODIFIED;
-							invalidate = 1;
+							nxt_state = IDLE;
+							/* if (dirty) begin
+				   				////////////////////////////////////////////////////////////////////////////
+				   				// Need to evict this line then read in a new one and write the new data //
+				   				//////////////////////////////////////////////////////////////////////////
+				   				evicting = 1;
+				   				nxt_state = W_EVICT;
+				   				u_we = 1;				// start the write to unified
+				 			end else begin
+				   				//////////////////////////////////////////////////////////////////
+				   				// Need to read a new line from unified and write the new data //
+				   				////////////////////////////////////////////////////////////////
+				   				nxt_state = W_READMEM;
+							end */
 						end else
 						// not possible by definition
 							nxt_state = IDLE;
-					// hit in write situation, we continue on to IDLE to look for new signals
+					
 					end else begin
 						d_rdy = 1;
 						d_we = 1;
-						if (dirty) begin
-				   			////////////////////////////////////////////////////////////////////////////
-				   			// Need to evict this line then read in a new one and write the new data //
-				   			//////////////////////////////////////////////////////////////////////////
-				   			evicting = 1;
-				   			nxt_state = W_EVICT;
-				   			//u_we = 1;				// start the write to unified
-				 		end else begin
-				   			//////////////////////////////////////////////////////////////////
-				   			// Need to read a new line from unified and write the new data //
-				   			////////////////////////////////////////////////////////////////
-				   			nxt_state = W_READMEM;
-				 		end
+						nxt_state = IDLE;
+						set_dirty = 1;
+						//////////////////////////////////////////////////////////////////
+				   		// if shared, invalidate, if modified, keep state			   //
+				   		////////////////////////////////////////////////////////////////
+						if (blk_state_t'(rstate)==SHARED) begin
+							wstate = MODIFIED;
+							invalidate = 1;
+						end else if (blk_state_t'(rstate)==MODIFIED) begin
+							wstate = MODIFIED;
+						end else begin
+							nxt_state = IDLE;
+						end
+						
 					end
 				end else if (re) begin // if Dcache read
 					if(!hit) begin
@@ -210,7 +228,8 @@ module cache_controller
 	// Instantiate Dcache //
 	///////////////////////
 	msi_cache Dcache(.clk(clk), .rst_n(rst_n), .addr(addr[12:2]), .wr_data(wrt_line), 
-		.wstate(wstate), .we(d_we), .re(d_re), .cpu_search(cpu_search), .BOCI(BOCI), .hit(hit), .dirty(dirty), .rstate(rstate), .rd_data(d_line),
+		.wstate(wstate), .we(d_we), .re(d_re), .cpu_search(cpu_search), .BOCI(BOCI[12:2]), .hit(hit), .dirty(dirty), .rstate(rstate), 
+		.rd_data(d_line),
 		.tag_out(tag_out), .cpu_search_found(cpu_search_found), .other_proc_data_line_wire(other_proc_data_line_wire));
 endmodule
 
