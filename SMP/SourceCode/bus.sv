@@ -20,6 +20,10 @@ input logic cpu1_search_found; /*return signal that verifies if BOCI was in cpu0
 input logic cpu0_search_found; 
 input invalidate_0; /* input from cpu that tells bus it has had an invalidate */
 input invalidate_1;
+input u_we_0;
+input u_we_1;
+input u_re_0;
+input u_re_1;
 output reg cpu_doing_curr_op; // SEP INTO 2 SIGNALS GRANT1 AND GRANT0
 output reg grant_0;
 output reg grant_1;
@@ -86,7 +90,15 @@ cpu1_invalidate_dmem = 0;
 
 case (state) 
 	NOOP: begin
-		if (read_miss_0 == 1) begin
+		if (u_we_0) begin
+		
+		end else if (u_we_1) begin
+		
+		end else if (u_re_0) begin
+		
+		end else if (u_re_1) begin
+		
+		end else if (read_miss_0 == 1) begin
 			cpu_doing_curr_op = 1'b0;
 			grant_0 = 1;
 			grant_1 = 0;

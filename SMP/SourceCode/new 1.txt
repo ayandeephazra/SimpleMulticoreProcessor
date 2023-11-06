@@ -1,5 +1,50 @@
 ######################################11.8###########################################
 1. write miss functionality in bus sm can just be replaced with cpu search + invalidate state like msi cache's rst_n function
+2. check 1, add grant functionality for u_ commands in IDLE state for bus sm
+
+deprecated: bus.sv
+
+typedef enum reg [1:0] {IDLE, CPU0, CPU1} state_t;
+	state_t state, nxt_state;
+	
+	always_ff @ (posedge clk, negedge rst_n) begin
+		if (rst_n) 
+			state <= IDLE;
+		else
+			state <= nxt_state;
+	end
+	
+	always_comb begin
+		cpu0_dmem_permission = 0;
+		cpu1_dmem_permission = 0;
+		nxt_state = state;
+		case (state)
+			IDLE: begin
+				if (dmem_rdy) begin
+					if (cpu0_u_we | cpu0_u_re) begin
+						cpu0_dmem_permission = 1;
+						nxt_state = CPU0;
+					end else if (cpu1_u_we | cpu1_u_re) begin
+						cpu1_dmem_permission = 1;
+						nxt_state = CPU1;
+					end else
+						nxt_state = IDLE;
+				end
+				else
+					nxt_state = IDLE;
+			end
+		
+			CPU0: begin
+				nxt_state = IDLE;
+			end
+			
+			// CPU1
+			default: begin
+				nxt_state = IDLE;
+			end
+	
+		endcase
+	end
 
 ######################################11.1###########################################
 first

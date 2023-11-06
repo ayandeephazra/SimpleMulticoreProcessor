@@ -35,7 +35,9 @@ module cache_controller
 	output reg [12:0] BICO
 	);
 	
-	//wire [63:0] d_line;			// line read from Dcache
+	localparam SOURCE_DMEM = 2'b00;
+	localparam SOURCE_OTHER_PROC = 2'b01;
+
 	wire [63:0] wrt_line;		// line to write to Dcache when it is a replacement from itself
 	wire dirty;
 	//wire hit;
@@ -47,7 +49,7 @@ module cache_controller
 	blk_state_t wstate;
 	blk_state_t rstate;
 	
-	typedef enum reg [2:0] {IDLE, R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
+	typedef enum reg [2:0] {IDLE, READ_MISS, R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
 	state_t state, nxt_state;
 	
 	always_ff @ (posedge clk, negedge rst_n) begin
@@ -83,7 +85,7 @@ module cache_controller
 						// write miss only possible if the block is invalid 
 							wstate = MODIFIED;
 							write_miss = 1;
-							nxt_state = IDLE;
+							nxt_state = WRITE_MISS;
 							/* if (dirty) begin
 				   				////////////////////////////////////////////////////////////////////////////
 				   				// Need to evict this line then read in a new one and write the new data //
@@ -102,10 +104,11 @@ module cache_controller
 							nxt_state = IDLE;
 					
 					end else begin
+						//set_dirty = 1;
 						d_rdy = 1;
 						d_we = 1;
 						nxt_state = IDLE;
-						set_dirty = 1;
+												
 						//////////////////////////////////////////////////////////////////
 				   		// if shared, invalidate, if modified, keep state			   //
 				   		////////////////////////////////////////////////////////////////
@@ -125,31 +128,45 @@ module cache_controller
 						if (dirty) begin
 							evicting = 1;
 			       			nxt_state = R_EVICT;
-			       			//u_we = 1;
+			       			u_we = 1;
 						// read miss only possible if the block is invalid 
 						end else if(blk_state_t'(rstate)==INVALID) begin
 							wstate = SHARED;
 							read_miss = 1;
-							nxt_state = IDLE;
+							nxt_state = READ_MISS;
 						end else
 							// not possible by definition
 								nxt_state = R_READMEM;
 							// hit in read situation, we continue on to IDLE to look for new signals
-					end 
-				end else
-					nxt_state = IDLE;
+						end 
+					end else
+						// Dcache hit and Icache hit do nothing - SHARED, MODIFIED
+						nxt_state = IDLE;
+			end
+			
+			READ_MISS: begin
+				nxt_state = IDLE;
+				if (cpu_datasel == SOURCE_OTHER_PROC) begin
+					d_we = 1;
+				end else if (cpu_datasel == SOURCE_DMEM) begin
+					d_we = 1;
+				end
+			end
+			
+			WRITE_MISS: begin
+				nxt_state = IDLE;
 			end
 
 			R_EVICT: begin
 				/* stay in this state till dmem is free then write */
-				d_rdy = 0;
-				if (!u_rdy | !cpu_dmem_permission)
+				evicting = 1;
+			   d_re = 1;
+			   u_we = 1;
+			   d_rdy = 0;	
+				if (u_rdy & grant)
+					nxt_state = R_DATA_RD;
+				else 
 					nxt_state = R_EVICT;
-				else if (u_rdy & cpu_dmem_permission) begin
-					nxt_state = IDLE;
-					u_we = 1;
-				end else
-					nxt_state = IDLE;
 				
 			end
 			W_EVICT: begin
