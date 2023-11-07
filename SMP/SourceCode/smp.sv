@@ -29,7 +29,6 @@ module smp(
 	wire cpu0_invalidate_dmem, cpu1_invalidate_dmem;
 	wire [15:0] cpu0_1, cpu1_0; // data forwarding between cpus
 	
-	
 
 	///////////////////////////////////
 	/////  CPU0 - DMEM INTERFACE  ////
@@ -50,6 +49,10 @@ module smp(
 	// common dmem interface
 	wire dmem_rdy;
 	wire [63:0] u_rd_data;
+	wire we, re;
+	wire [10:0] mem_addr;
+	wire [63:0] mem_wdata_line;
+	reg [63:0] mem_rdata_reg;
 	
 	reg cpu0_dmem_permission, cpu1_dmem_permission;
 	
@@ -92,9 +95,18 @@ module smp(
 								.BOCI(bus_addr_out), .cpu1_inv_from_cpu0(cpu1_inv_from_cpu0),
 									.cpu0_inv_from_cpu1(cpu0_inv_from_cpu1), .cpu0_invalidate_dmem(cpu0_invalidate_dmem), 
 										.cpu1_invalidate_dmem(cpu1_invalidate_dmem), 
-											.cpu0_search(cpu0_search), .cpu1_search(cpu1_search));
+											.cpu0_search(cpu0_search), .cpu1_search(cpu1_search), .we(we), .re(re));
 		
-	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(), .re(), .we(), .wdata(), .rd_data(), .rdy(dmem_rdy));
+	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(mem_addr), .re(re), .we(we), .wdata(), .rd_data(mem_rdata_reg),
+		.rdy(dmem_rdy));
+	
+	assign mem_addr = (grant_0)? cpu0_u_addr:
+					  (grant_1)? cpu1_u_addr:
+					  11'h0;
+					  
+	assign mem_wdata_line =	(grant_0)? cpu0_d_line:
+					  		(grant_1)? cpu1_d_line:
+					  		64'h0000;				  
 	
 	
 

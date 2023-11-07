@@ -2,7 +2,7 @@ module bus(	clk, rst_n, read_miss_0, read_miss_1, write_miss_0, write_miss_1,
 	block_state_0, block_state_1, BICO_0, BICO_1, BOCI, cpu1_search_found, cpu0_search_found, 
 	invalidate_0, invalidate_1, u_we_0, u_we_1, u_re_0, u_re_1, cpu_doing_curr_op, 
 	grant_0, grant_1, cpu0_datasel, cpu1_datasel, cpu1_inv_from_cpu0, cpu0_inv_from_cpu1,
-	cpu0_invalidate_dmem, cpu1_invalidate_dmem, cpu0_search, cpu1_search);
+	cpu0_invalidate_dmem, cpu1_invalidate_dmem, cpu0_search, cpu1_search, we, re);
 	
 import common::*;				// import all encoding definitions
 
@@ -36,7 +36,9 @@ output reg cpu1_wback_dmem;*/
 output reg cpu0_invalidate_dmem; /* signal the cpu to invalidate data to dmem*/
 output reg cpu1_invalidate_dmem;
 output reg cpu0_search; /*signal that notifies cpu0 to search its d-cache for a valid block ref'd by BOCI*/
-output reg cpu1_search; 
+output reg cpu1_search;
+output reg we;
+output reg re;
 
 
 localparam SOURCE_DMEM = 2'b00;
@@ -86,21 +88,27 @@ cpu1_inv_from_cpu0 = 0;
 cpu0_inv_from_cpu1 = 0;
 cpu0_invalidate_dmem = 0;
 cpu1_invalidate_dmem = 0;
+we = 0;
+re = 0;
 
 case (state) 
 	NOOP: begin
 		if (u_we_0) begin
 			grant_0 = 1;
 			grant_1 = 0;
+			we = 1;
 		end else if (u_we_1) begin
 			grant_0 = 0;
 			grant_1 = 1;
+			we = 1;
 		end else if (u_re_0) begin
 			grant_0 = 1;
 			grant_1 = 0;
+			re = 1;
 		end else if (u_re_1) begin
 			grant_0 = 0;
 			grant_1 = 1;
+			re = 1;
 		end else if (read_miss_0 == 1) begin
 			cpu_doing_curr_op = 1'b0;
 			grant_0 = 1;
