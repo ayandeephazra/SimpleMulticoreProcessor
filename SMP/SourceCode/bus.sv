@@ -1,9 +1,8 @@
-module bus(clk, rst_n, read_miss_0, read_miss_1,
-	write_miss_0, write_miss_1, block_state_0, block_state_1, BICO_0, BICO_1, BOCI,
-	cpu1_search_found, cpu0_search_found, invalidate_0, invalidate_1, cpu_doing_curr_op, 
+module bus(	clk, rst_n, read_miss_0, read_miss_1, write_miss_0, write_miss_1, 
+	block_state_0, block_state_1, BICO_0, BICO_1, BOCI, cpu1_search_found, cpu0_search_found, 
+	invalidate_0, invalidate_1, u_we_0, u_we_1, u_re_0, u_re_1, cpu_doing_curr_op, 
 	grant_0, grant_1, cpu0_datasel, cpu1_datasel, cpu1_inv_from_cpu0, cpu0_inv_from_cpu1,
-	cpu0_invalidate_dmem, cpu1_invalidate_dmem,
-	cpu0_search, cpu1_search);
+	cpu0_invalidate_dmem, cpu1_invalidate_dmem, cpu0_search, cpu1_search);
 	
 import common::*;				// import all encoding definitions
 
@@ -46,7 +45,7 @@ localparam BLOCK_STATE_MODIFIED = 2'b10;
 localparam BLOCK_STATE_SHARED = 2'b01;
 localparam BLOCK_STATE_INVALID = 2'b00;
 
-/*typedef enum logic [1:0] {NOOP, READ_MISS_0, READ_MISS_1, WRITE_MISS_0, WRITE_MISS_1, INVALIDATE} bus_op_t;*/
+/*typedef enum logic [2:0] {NOOP, READ_MISS_0, READ_MISS_1, WRITE_MISS_0, WRITE_MISS_1, INVALIDATE_0, INVALIDATE_1} bus_op_t;*/
 bus_op_t state, nxt_state;
 
 reg [1:0] count_to_4;
@@ -78,7 +77,7 @@ cpu_doing_curr_op = cpu_doing_curr_op;
 grant_0 = 0;
 grant_1 = 0;
 nxt_state = NOOP;
-BOCI = 11'bxxxxxxxxxxx;
+BOCI = 13'bxxxxxxxxxxxxx;
 cpu1_search = 0;
 cpu0_search = 0;
 cpu1_datasel = SOURCE_DMEM;
@@ -91,13 +90,17 @@ cpu1_invalidate_dmem = 0;
 case (state) 
 	NOOP: begin
 		if (u_we_0) begin
-		
+			grant_0 = 1;
+			grant_1 = 0;
 		end else if (u_we_1) begin
-		
+			grant_0 = 0;
+			grant_1 = 1;
 		end else if (u_re_0) begin
-		
+			grant_0 = 1;
+			grant_1 = 0;
 		end else if (u_re_1) begin
-		
+			grant_0 = 0;
+			grant_1 = 1;
 		end else if (read_miss_0 == 1) begin
 			cpu_doing_curr_op = 1'b0;
 			grant_0 = 1;
@@ -179,6 +182,7 @@ case (state)
 			cpu0_invalidate_dmem = 1;
 		end else if (block_state_1==BLOCK_STATE_MODIFIED) begin
 			BOCI = BICO_0;
+			cpu1_inv_from_cpu0 = 1;
 		end else 
 			/*error*/
 			nxt_state = NOOP;

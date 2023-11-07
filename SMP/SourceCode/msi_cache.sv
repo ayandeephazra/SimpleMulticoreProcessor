@@ -8,6 +8,7 @@ module msi_cache
    input re,					// read enable (for power purposes only)
    input cpu_search,
    input [10:0] BOCI,
+   input invalidate_from_other_cpu,
 
    output dirty,
    output hit,
@@ -18,6 +19,9 @@ module msi_cache
    output [63:0] other_proc_data_line_wire
   );
 
+  /*
+       typedef enum logic [1:0] {INVALID, SHARED, MODIFIED} blk_state_t;
+  */
 
 reg [70:0]mem[0:63];	// {blk_state,tag[4:0],wdata[63:0]}
 reg [6:0] x;
@@ -44,6 +48,8 @@ always @(clk or we_filt or negedge rst_n)
 	  mem[x] = {INVALID,{69{1'bx}}};		// only state is cleared to invalid, all others are x
   else if (~clk && we_filt)
     mem[addr[5:0]] = {wstate,addr[10:6],wr_data};
+  else if (~clk && invalidate_from_other_cpu)
+    mem[BOCI[5:0]] = {2'b00,BOCI[10:6],wr_data};
 
 ////////////////////////////////////////////////////////////
 // Model cache read including 4:1 muxing of 16-bit words //

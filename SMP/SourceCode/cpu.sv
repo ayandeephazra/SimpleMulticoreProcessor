@@ -16,7 +16,7 @@ module cpu
    input [63:0] u_rd_data,	        	// data read from unified memory
    input u_rdy,				              // indicates unified memory read/write operation finished
    input [1:0] cpu_datasel,					// where should this cpu get its data from?
-   input reg cpu_dmem_permission,		// permission to use dmem
+  
    input invalidate_from_other_cpu,		// other cpu requests an invalidate on "now" stale copy that this guy his
    input [15:0] other_proc_data,
    output logic read_miss,				  // read miss within cpu cache
@@ -153,12 +153,13 @@ alu iALU(.clk(clk), .rst_n(rst_n), .src0(src0), .src1(src1), .func(alu_func_ID_E
 ////////////////////////////
 assign DM_we = ~|dst_EX_DM[15:13] & dm_we_EX_DM;	// qualified internal DM we		
 
-cache_controller iCC0(.clk(clk), .rst_n(rst_n), .addr(dst_EX_DM[12:0]), .wr_data(p0_EX_DM), .we(DM_we), .re(dm_re_EX_DM),
-.cpu_search(cpu_search), .BOCI(BOCI), .other_proc_data(other_proc_data), .grant(grant), .u_rdy(u_rdy), .u_rd_data(u_rd_data),
-.cpu_datasel(cpu_datasel), .cpu_dmem_permission(cpu_dmem_permission), .invalidate_from_other_cpu(invalidate_from_other_cpu), 
-.d_rdy(d_rdy), .hit(hit), .rd_data(dm_rd_data_EX_DM), 
-.cpu_search_found(cpu_search_found), .send_other_proc_data(send_other_proc_data), .read_miss(read_miss), .write_miss(write_miss), 
-.invalidate(invalidate), .u_addr(u_addr), .u_we(u_we), .u_re(u_re), .d_line(d_line));
+cache_controller iCC0(.clk(clk), .rst_n(rst_n), .addr(dst_EX_DM[12:0]), .wr_data(p0_EX_DM), 
+.we(DM_we), .re(dm_re_EX_DM), .cpu_search(cpu_search), .BOCI(BOCI), .other_proc_data(other_proc_data),
+.grant(grant), .u_rdy(u_rdy), .u_rd_data(u_rd_data), .cpu_datasel(cpu_datasel), 
+.invalidate_from_other_cpu(invalidate_from_other_cpu), 
+.d_rdy(d_rdy), .hit(hit), .rd_data(dm_rd_data_EX_DM), .cpu_search_found(cpu_search_found), 
+.send_other_proc_data(send_other_proc_data), .read_miss(read_miss), .write_miss(write_miss), 
+.invalidate(invalidate), .u_addr(u_addr), .u_we(u_we), .u_re(u_re), .d_line(d_line), .BICO(BICO));
 
 assign rd_data_EX_DM = (|dst_EX_DM[15:13]) ? mm_rdata : dm_rd_data_EX_DM;
 

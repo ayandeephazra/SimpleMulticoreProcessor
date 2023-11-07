@@ -1,7 +1,13 @@
 ######################################11.8###########################################
 1. write miss functionality in bus sm can just be replaced with cpu search + invalidate state like msi cache's rst_n function
-2. check 1, add grant functionality for u_ commands in IDLE state for bus sm
+2. 
+3. 
 
+Completed:
+1. check 1, add grant functionality for u_ commands in IDLE state for bus sm
+2. add functioanlity for cpu_inv_from_other_cpu
+
+----------
 deprecated: bus.sv
 
 typedef enum reg [1:0] {IDLE, CPU0, CPU1} state_t;

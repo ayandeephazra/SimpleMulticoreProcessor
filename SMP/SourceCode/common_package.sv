@@ -13,7 +13,7 @@ package common;
 
   /// Src1 sources ///
   typedef enum logic [1:0] {RF2SRC1, IMM8_2SRC1, NPC2SRC1, ZERO2SRC1} src1sel_t;
-  
+
   /// SM bus op ///
   typedef enum logic [2:0] {NOOP, READ_MISS_0, READ_MISS_1, WRITE_MISS_0, 
       WRITE_MISS_1, INVALIDATE_0, INVALIDATE_1} bus_op_t;

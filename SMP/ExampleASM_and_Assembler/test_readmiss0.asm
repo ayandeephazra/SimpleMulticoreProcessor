@@ -1,1 +1,4 @@
+LLB R1, 0x16
 LLB R2, 0x04
+SW R1, R2, 0
+LW R4, R1, #0
