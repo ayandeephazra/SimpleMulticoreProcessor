@@ -1,3 +1,11 @@
+1. one proc doing NOOPs and one proc doing memory operations
+
+2. wait state if dmem is the source, do the datasel mux select once u_rdy
+
+3. write miss will also have a bus transaction (u_rdy)
+
+4. evict -> write what ur evicting, 
+
 ######################################11.8###########################################
 1. verify block diagram writing to data mem
 2. when a new line is written, and no cache entry corresponds to it, it should write to main mem

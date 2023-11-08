@@ -89,7 +89,7 @@ module cache_controller
 							// write miss only possible if the block is invalid 
 							wstate = MODIFIED;
 							write_miss = 1;
-							nxt_state = W_READMEM;
+							nxt_state = WRITE_MISS;
 							d_we = 1;
 							
 						end else if (blk_state_t'(rstate)==MODIFIED) begin
@@ -149,16 +149,18 @@ module cache_controller
 			end
 			
 			READ_MISS: begin
-				nxt_state = IDLE;
+				//nxt_state = IDLE;
+				// wait state if dmem is the source, do the datasel mux select once u_rdy
 				if (cpu_datasel == SOURCE_OTHER_PROC) begin
 					d_we = 1;
 				end else if (cpu_datasel == SOURCE_DMEM) begin
 					d_we = 1;
+					
 				end
 			end
 			
 			WRITE_MISS: begin
-				
+				d_we = 1;
 				nxt_state = IDLE;
 			end
 
