@@ -16,7 +16,8 @@ module msi_cache
    output [63:0] rd_data,		// 64-bit cache line read out
    output [4:0] tag_out,			// 5-bit tag.  This is needed during evictions
    output reg cpu_search_found,
-   output [63:0] other_proc_data_line_wire
+   output [63:0] other_proc_data_line_wire,
+   output reg [1:0] block_state
   );
 
   /*
@@ -61,6 +62,7 @@ always @(clk or re or addr)
   end else if (clk && cpu_search && (mem[BOCI[5:0]][70] == 1'b1)) begin
 		cpu_search_found = 1;
 		other_proc_data_line = mem[BOCI[5:0]];
+        block_state = blk_state_t'(mem[BOCI[5:0]][70:69]);
   end else
 		cpu_search_found = 0;
 	

@@ -137,12 +137,18 @@ case (state)
 			cpu_doing_curr_op = 1'b0;
 			grant_0 = 0;
 			grant_1 = 1;
+			
+			BOCI = BICO_0;
+			cpu1_search = 1;
 			nxt_state = WRITE_MISS_0;
 		end
 		else if (write_miss_1 == 1) begin
 			cpu_doing_curr_op = 1'b1;
 			grant_0 = 1;
 			grant_1 = 0;
+			
+			BOCI = BICO_1;
+			cpu0_search = 1;
 			nxt_state = WRITE_MISS_1;
 		end
 		else if (invalidate_0 == 1) begin
@@ -182,33 +188,39 @@ case (state)
 	WRITE_MISS_0: begin
 		grant_0 = 0;
 		grant_1 = 1;
-		if(block_state_1==BLOCK_STATE_SHARED) begin
-			/* invalidate on active copy on cpu1, write to block on cpu0 with addr, write back to dmem*/
-			BOCI = BICO_0;
-			cpu1_inv_from_cpu0 = 1;
-			/* block written by default on cpu0? */ // invalidate, write back when evict from cache
-			cpu0_invalidate_dmem = 1;
-		end else if (block_state_1==BLOCK_STATE_MODIFIED) begin
-			BOCI = BICO_0;
-			cpu1_inv_from_cpu0 = 1;
-		end else 
-			/*error*/
+		if(cpu1_search_found) begin
+			if(block_state_1==BLOCK_STATE_SHARED) begin
+				/* invalidate on active copy on cpu1, write to block on cpu0 with addr, write back to dmem*/
+				BOCI = BICO_0;
+				cpu1_inv_from_cpu0 = 1;
+				/* block written by default on cpu0? */ // invalidate, write back when evict from cache
+				cpu0_invalidate_dmem = 1;
+			end else if (block_state_1==BLOCK_STATE_MODIFIED) begin
+				BOCI = BICO_0;
+				cpu1_inv_from_cpu0 = 1;
+			end else 
+				/*error*/
+				nxt_state = NOOP;
+		end else
 			nxt_state = NOOP;
 	end
 	WRITE_MISS_1: begin
 		grant_0 = 1;
 		grant_1 = 0;
-		if(block_state_0==BLOCK_STATE_SHARED) begin
-			/* invalidate on active copy on cpu0, write to block on cpu1 with addr, write back to dmem*/
-			BOCI = BICO_1;
-			cpu0_inv_from_cpu1 = 1;
-			/* block written by default on cpu1? */
-			cpu1_invalidate_dmem = 1;
-		end else if (block_state_0==BLOCK_STATE_MODIFIED) begin
-			BOCI = BICO_0;
-			cpu0_inv_from_cpu1 = 1;
+		if (cpu0_search_found) begin
+			if(block_state_0==BLOCK_STATE_SHARED) begin
+				/* invalidate on active copy on cpu0, write to block on cpu1 with addr, write back to dmem*/
+				BOCI = BICO_1;
+				cpu0_inv_from_cpu1 = 1;
+				/* block written by default on cpu1? */
+				cpu1_invalidate_dmem = 1;
+			end else if (block_state_0==BLOCK_STATE_MODIFIED) begin
+				BOCI = BICO_0;
+				cpu0_inv_from_cpu1 = 1;
+			end else
+				/*error*/
+				nxt_state = NOOP;
 		end else
-			/*error*/
 			nxt_state = NOOP;
 	end
 	INVALIDATE_0:  begin

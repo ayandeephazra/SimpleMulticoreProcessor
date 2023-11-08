@@ -1,5 +1,5 @@
 module id
-  import common::*;					// import all encoding definitions
+import common::*;					// import all encoding definitions
   (input clk,rst_n,
    input [19:0] instr,				// instruction to decode and execute direct from IM, flop first
    input [3:0] PSW_EX_DM,			// zero flag from ALU (used for ADDZ)

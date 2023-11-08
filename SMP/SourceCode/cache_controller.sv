@@ -30,7 +30,8 @@ module cache_controller
 	output reg u_we,
 	output reg u_re,
 	output [63:0] d_line,
-	output reg [12:0] BICO
+	output reg [12:0] BICO,
+	output [1:0] block_state
 	);
 	
 	localparam SOURCE_DMEM = 2'b00;
@@ -55,7 +56,7 @@ module cache_controller
 	state_t state, nxt_state;
 	
 	always_ff @ (posedge clk, negedge rst_n) begin
-		if (rst_n) 
+		if (!rst_n) 
 			state <= IDLE;
 		else
 			state <= nxt_state;
@@ -88,7 +89,8 @@ module cache_controller
 							// write miss only possible if the block is invalid 
 							wstate = MODIFIED;
 							write_miss = 1;
-							nxt_state = WRITE_MISS;
+							nxt_state = W_READMEM;
+							d_we = 1;
 							
 						end else if (blk_state_t'(rstate)==MODIFIED) begin
 				   			////////////////////////////////////////////////////////////////////////////
@@ -156,6 +158,7 @@ module cache_controller
 			end
 			
 			WRITE_MISS: begin
+				
 				nxt_state = IDLE;
 			end
 
@@ -255,6 +258,7 @@ module cache_controller
 		.wstate(wstate), .we(d_we), .re(d_re), .cpu_search(cpu_search), .BOCI(BOCI[12:2]), 
 		.invalidate_from_other_cpu(invalidate_from_other_cpu),
 		.hit(hit), .dirty(dirty), .rstate(rstate), .rd_data(d_line), .tag_out(tag_out), 
-		.cpu_search_found(cpu_search_found), .other_proc_data_line_wire(other_proc_data_line_wire));
+		.cpu_search_found(cpu_search_found), .other_proc_data_line_wire(other_proc_data_line_wire),
+		.block_state(block_state));
 endmodule
 

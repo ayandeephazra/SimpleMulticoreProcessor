@@ -159,7 +159,8 @@ cache_controller iCC0(.clk(clk), .rst_n(rst_n), .addr(dst_EX_DM[12:0]), .wr_data
 .invalidate_from_other_cpu(invalidate_from_other_cpu), 
 .d_rdy(d_rdy), .hit(hit), .rd_data(dm_rd_data_EX_DM), .cpu_search_found(cpu_search_found), 
 .send_other_proc_data(send_other_proc_data), .read_miss(read_miss), .write_miss(write_miss), 
-.invalidate(invalidate), .u_addr(u_addr), .u_we(u_we), .u_re(u_re), .d_line(d_line), .BICO(BICO));
+.invalidate(invalidate), .u_addr(u_addr), .u_we(u_we), .u_re(u_re), .d_line(d_line), .BICO(BICO), 
+.block_state(block_state));
 
 assign rd_data_EX_DM = (|dst_EX_DM[15:13]) ? mm_rdata : dm_rd_data_EX_DM;
 
