@@ -90,14 +90,15 @@ module smp(
 			.block_state_1(block_state_1), .BICO_0(cpu0_to_bus_addr), .BICO_1(cpu1_to_bus_addr),
 				.cpu1_search_found(cpu1_search_found), .cpu0_search_found(cpu0_search_found), 
 					.invalidate_0(invalidate_0), .invalidate_1(invalidate_1), .u_we_0(cpu0_u_we), 
-						.u_we_1(cpu1_u_we), .u_re_0(cpu0_u_re), .u_re_1(cpu1_u_re), .cpu_doing_curr_op(cpu_curr_op), 
+						.u_we_1(cpu1_u_we), .u_re_0(cpu0_u_re), .u_re_1(cpu1_u_re), .u_rdy(dmem_rdy),
+							.cpu_doing_curr_op(cpu_curr_op), 
 							.grant_0(grant_0), .grant_1(grant_1), .cpu0_datasel(cpu0_datasel), .cpu1_datasel(cpu1_datasel), 
 								.BOCI(bus_addr_out), .cpu1_inv_from_cpu0(cpu1_inv_from_cpu0),
 									.cpu0_inv_from_cpu1(cpu0_inv_from_cpu1), .cpu0_invalidate_dmem(cpu0_invalidate_dmem), 
 										.cpu1_invalidate_dmem(cpu1_invalidate_dmem), 
 											.cpu0_search(cpu0_search), .cpu1_search(cpu1_search), .we(we), .re(re));
 		
-	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(mem_addr), .re(re), .we(we), .wdata(), .rd_data(mem_rdata_reg),
+	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(mem_addr), .re(re), .we(we), .wdata(), .rd_data(u_rd_data),
 		.rdy(dmem_rdy));
 	
 	assign mem_addr = (grant_0)? cpu0_u_addr:

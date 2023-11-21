@@ -1,6 +1,6 @@
 module bus(	clk, rst_n, read_miss_0, read_miss_1, write_miss_0, write_miss_1, 
 	block_state_0, block_state_1, BICO_0, BICO_1, BOCI, cpu1_search_found, cpu0_search_found, 
-	invalidate_0, invalidate_1, u_we_0, u_we_1, u_re_0, u_re_1, cpu_doing_curr_op, 
+	invalidate_0, invalidate_1, u_we_0, u_we_1, u_re_0, u_re_1, u_rdy, cpu_doing_curr_op, 
 	grant_0, grant_1, cpu0_datasel, cpu1_datasel, cpu1_inv_from_cpu0, cpu0_inv_from_cpu1,
 	cpu0_invalidate_dmem, cpu1_invalidate_dmem, cpu0_search, cpu1_search, we, re);
 	
@@ -23,6 +23,7 @@ input u_we_0;
 input u_we_1;
 input u_re_0;
 input u_re_1;
+input u_rdy;
 output reg cpu_doing_curr_op; // SEP INTO 2 SIGNALS GRANT1 AND GRANT0
 output reg grant_0;
 output reg grant_1;
@@ -82,8 +83,8 @@ nxt_state = NOOP;
 BOCI = 13'bxxxxxxxxxxxxx;
 cpu1_search = 0;
 cpu0_search = 0;
-cpu1_datasel = SOURCE_DMEM;
-cpu0_datasel = SOURCE_DMEM;
+cpu1_datasel = 2'b11;
+cpu0_datasel = 2'b11;
 cpu1_inv_from_cpu0 = 0;
 cpu0_inv_from_cpu1 = 0;
 cpu0_invalidate_dmem = 0;
@@ -171,9 +172,20 @@ case (state)
 		BOCI = BICO_0;
 		if(cpu1_search_found)// make data available for 2 cycles at least
 			cpu0_datasel = SOURCE_OTHER_PROC; // 1 is other processor, 0 is bus
-		else 
-			cpu0_datasel = SOURCE_DMEM;
+		else begin
+			//cpu0_datasel = SOURCE_DMEM;
+			re = 1;
+			grant_0 = 1;
+			nxt_state = READ_MISS_0_WAIT;
+		end
 		/* route data from cpu1 to cpu0 */
+	end
+	READ_MISS_0_WAIT: begin
+		if (!u_rdy)
+			nxt_state = READ_MISS_0_WAIT;
+		else
+			cpu0_datasel = SOURCE_DMEM;
+			
 	end
 	READ_MISS_1: begin
 	    grant_0 = 0;

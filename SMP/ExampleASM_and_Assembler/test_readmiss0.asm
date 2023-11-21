@@ -1,3 +1,2 @@
-LLB R1, 0x16
-LLB R2, 0x04
-SW R2, R1, 0
+LLB R1, 0x01
+LW R3, R1, 0

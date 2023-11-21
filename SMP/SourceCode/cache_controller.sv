@@ -47,12 +47,13 @@ module cache_controller
 	reg dfill;
 	wire [63:0] Dwrt_line;		// 64-bit data to write to Dcache	
 	wire [4:0] tag_out;			// tag bits from data cache read.  Need this for address formation on evict
+	reg [12:0] addr_capture;
 	
 	//logic set_dirty;
 	blk_state_t wstate;
 	blk_state_t rstate;
 	
-	typedef enum reg [3:0] {IDLE, READ_MISS, WRITE_MISS, R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
+	typedef enum reg [4:0] {IDLE, READ_MISS, READ_MISS_WAIT, WRITE_MISS, R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
 	state_t state, nxt_state;
 	
 	always_ff @ (posedge clk, negedge rst_n) begin
@@ -149,14 +150,29 @@ module cache_controller
 			end
 			
 			READ_MISS: begin
+				
 				//nxt_state = IDLE;
 				// wait state if dmem is the source, do the datasel mux select once u_rdy
 				if (cpu_datasel == SOURCE_OTHER_PROC) begin
 					d_we = 1;
-				end else if (cpu_datasel == SOURCE_DMEM) begin
+				end else if (!u_rdy ) begin
+					d_re = 1;
+				    nxt_state = READ_MISS_WAIT;
+				end else if (u_rdy && cpu_datasel == SOURCE_DMEM) begin
 					d_we = 1;
+					nxt_state = READ_MISS_WAIT;
+				end
+			end
+			
+			READ_MISS_WAIT: begin
+				if (!u_rdy) 
+					nxt_state = READ_MISS_WAIT; 
+				else begin
+					d_we = 1;
+					nxt_state = IDLE;
 					
 				end
+					
 			end
 			
 			WRITE_MISS: begin
@@ -219,10 +235,10 @@ module cache_controller
                   ((addr[1:0]==2'b01)&& hit) ? {d_line[63:32],wr_data,d_line[15:0]} :
                   ((addr[1:0]==2'b10)&& hit) ? {d_line[63:48],wr_data,d_line[31:0]} :
 				  ((addr[1:0]==2'b11)&& hit) ? {wr_data,d_line[47:0]} :
-				  ((addr[1:0]==2'b00)&& !hit && (cpu_datasel==2'b00)) ? {d_line[63:16], u_rd_data[15:0]} :
-				  ((addr[1:0]==2'b01)&& !hit && (cpu_datasel==2'b00)) ? {d_line[63:32], u_rd_data[31:16], d_line[15:0]} :
-				  ((addr[1:0]==2'b10)&& !hit && (cpu_datasel==2'b00)) ? {d_line[63:48], u_rd_data[47:32], d_line[31:0]} :
-				  ((addr[1:0]==2'b11)&& !hit && (cpu_datasel==2'b00)) ? {u_rd_data[63:48], d_line[47:0]} :
+				  ((addr_capture[1:0]==2'b00)&& !hit) ? {d_line[63:16], u_rd_data[15:0]} :
+				  ((addr_capture[1:0]==2'b01)&& !hit) ? {d_line[63:32], u_rd_data[31:16], d_line[15:0]} :
+				  ((addr_capture[1:0]==2'b10)&& !hit) ? {d_line[63:48], u_rd_data[47:32], d_line[31:0]} :
+				  ((addr_capture[1:0]==2'b11)&& !hit) ? {u_rd_data[63:48], d_line[47:0]} :
 				  ((addr[1:0]==2'b00)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:16], other_proc_data} :
 				  ((addr[1:0]==2'b01)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:32], other_proc_data, d_line[15:0]} :
 				  ((addr[1:0]==2'b10)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:48], other_proc_data, d_line[31:0]} :
@@ -252,6 +268,11 @@ module cache_controller
 	assign u_addr = (evicting) ? {tag_out,addr[7:2]} :
 				addr[12:2];					// address is forcibly aligned to 64-bit boundary
 	//assign u_addr = addr[12:2];
+	
+	
+	always_ff @ (posedge clk)
+		if (re & !u_rdy)
+			addr_capture <= addr;
 
 	/////////////////////////
 	// Instantiate Dcache //

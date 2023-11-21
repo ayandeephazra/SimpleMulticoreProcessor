@@ -13,9 +13,10 @@ output reg [63:0] rd_data;
 output reg rdy;					// deasserted when memory operation completed
 
 reg [63:0]mem[0:2047];			// entire memory space at 64-bits wide
+reg [10:0] init_indx;
 
 initial 
-	for (init_indx=11'h000; init_indx < 11'7FF; init_indx=init_indx + 1)
+	for (init_indx=11'h000; init_indx < 11'h7FF; init_indx=init_indx + 1)
 		mem[init_indx] = {init_indx, init_indx, init_indx, init_indx, init_indx, 1'b1,init_indx[7:0]};
 
 //////////////////////////
