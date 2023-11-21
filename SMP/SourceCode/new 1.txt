@@ -1,3 +1,8 @@
+######################################11.22###########################################
+1. multiple lw in a row fails, some are overwritten
+2. 2 lw to different addresses in succession works, something wrong with address capture
+
+######################################11.8###########################################
 1. one proc doing NOOPs and one proc doing memory operations
 
 2. wait state if dmem is the source, do the datasel mux select once u_rdy

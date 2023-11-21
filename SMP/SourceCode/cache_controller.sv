@@ -48,7 +48,9 @@ module cache_controller
 	wire [63:0] Dwrt_line;		// 64-bit data to write to Dcache	
 	wire [4:0] tag_out;			// tag bits from data cache read.  Need this for address formation on evict
 	reg [12:0] addr_capture;
-	
+	wire [12:0] cache_res_addr;
+	reg use_flopped_addr;
+	reg [63:0] d_line_capture;
 	//logic set_dirty;
 	blk_state_t wstate;
 	blk_state_t rstate;
@@ -75,6 +77,7 @@ module cache_controller
 		d_re = re;
 		d_rdy = 1;
 		dfill = 0;
+		use_flopped_addr = 0;
 		BICO = addr;
 		nxt_state = IDLE;
 		case (state) 
@@ -150,27 +153,34 @@ module cache_controller
 			end
 			
 			READ_MISS: begin
-				
-				//nxt_state = IDLE;
-				// wait state if dmem is the source, do the datasel mux select once u_rdy
-				if (cpu_datasel == SOURCE_OTHER_PROC) begin
-					d_we = 1;
-				end else if (!u_rdy ) begin
-					d_re = 1;
-				    nxt_state = READ_MISS_WAIT;
-				end else if (u_rdy && cpu_datasel == SOURCE_DMEM) begin
-					d_we = 1;
-					nxt_state = READ_MISS_WAIT;
-				end
+				d_rdy = 0;
+				if (grant) begin
+					//nxt_state = IDLE;
+					// wait state if dmem is the source, do the datasel mux select once u_rdy
+					if (cpu_datasel == SOURCE_OTHER_PROC) begin
+						d_we = 1;
+					end else if (!u_rdy ) begin
+						//d_re = 1;
+						nxt_state = READ_MISS_WAIT;
+					end else if (u_rdy && cpu_datasel == SOURCE_DMEM) begin
+						d_we = 1;
+						nxt_state = IDLE;
+						use_flopped_addr = 1;
+						wstate = SHARED; 
+					end
+				end else
+					nxt_state = READ_MISS;
 			end
 			
 			READ_MISS_WAIT: begin
+				d_rdy = 0;
 				if (!u_rdy) 
 					nxt_state = READ_MISS_WAIT; 
 				else begin
 					d_we = 1;
 					nxt_state = IDLE;
-					
+					use_flopped_addr = 1;
+					wstate = SHARED; 
 				end
 					
 			end
@@ -231,14 +241,14 @@ module cache_controller
 		endcase
 	end
 		 
-	assign wrt_line = ((addr[1:0]==2'b00)&& hit) ? {d_line[63:16],wr_data} :
+	assign wrt_line = ((addr_capture[1:0]==2'b00) && use_flopped_addr) ? {d_line_capture[63:16], u_rd_data[15:0]} :
+				  ((addr_capture[1:0]==2'b01) && use_flopped_addr) ? {d_line_capture[63:32], u_rd_data[31:16], d_line_capture[15:0]} :
+				  ((addr_capture[1:0]==2'b10) && use_flopped_addr) ? {d_line_capture[63:48], u_rd_data[47:32], d_line_capture[31:0]} :
+				  ((addr_capture[1:0]==2'b11) && use_flopped_addr) ? {u_rd_data[63:48], d_line_capture[47:0]} :
+				  ((addr[1:0]==2'b00)&& hit) ? {d_line[63:16],wr_data} :
                   ((addr[1:0]==2'b01)&& hit) ? {d_line[63:32],wr_data,d_line[15:0]} :
                   ((addr[1:0]==2'b10)&& hit) ? {d_line[63:48],wr_data,d_line[31:0]} :
 				  ((addr[1:0]==2'b11)&& hit) ? {wr_data,d_line[47:0]} :
-				  ((addr_capture[1:0]==2'b00)&& !hit) ? {d_line[63:16], u_rd_data[15:0]} :
-				  ((addr_capture[1:0]==2'b01)&& !hit) ? {d_line[63:32], u_rd_data[31:16], d_line[15:0]} :
-				  ((addr_capture[1:0]==2'b10)&& !hit) ? {d_line[63:48], u_rd_data[47:32], d_line[31:0]} :
-				  ((addr_capture[1:0]==2'b11)&& !hit) ? {u_rd_data[63:48], d_line[47:0]} :
 				  ((addr[1:0]==2'b00)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:16], other_proc_data} :
 				  ((addr[1:0]==2'b01)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:32], other_proc_data, d_line[15:0]} :
 				  ((addr[1:0]==2'b10)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:48], other_proc_data, d_line[31:0]} :
@@ -271,13 +281,16 @@ module cache_controller
 	
 	
 	always_ff @ (posedge clk)
-		if (re & !u_rdy)
+		if (re & !u_rdy) begin
 			addr_capture <= addr;
+			d_line_capture <= d_line;
+		end	
+	assign cache_res_addr = (use_flopped_addr)? addr_capture: addr;
 
 	/////////////////////////
 	// Instantiate Dcache //
 	///////////////////////
-	msi_cache Dcache(.clk(clk), .rst_n(rst_n), .addr(addr[12:2]), .wr_data(Dwrt_line), 
+	msi_cache Dcache(.clk(clk), .rst_n(rst_n), .addr(cache_res_addr[12:2]), .wr_data(Dwrt_line), 
 		.wstate(wstate), .we(d_we), .re(d_re), .cpu_search(cpu_search), .BOCI(BOCI[12:2]), 
 		.invalidate_from_other_cpu(invalidate_from_other_cpu),
 		.hit(hit), .dirty(dirty), .rstate(rstate), .rd_data(d_line), .tag_out(tag_out), 
