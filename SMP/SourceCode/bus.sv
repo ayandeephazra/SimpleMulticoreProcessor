@@ -167,8 +167,7 @@ case (state)
 		end
 	end
 	READ_MISS_0: begin		
-		grant_0 = 1;
-		grant_1 = 0;
+		
 		BOCI = BICO_0;
 		if(cpu1_search_found)// make data available for 2 cycles at least
 			cpu0_datasel = SOURCE_OTHER_PROC; // 1 is other processor, 0 is bus
@@ -185,17 +184,25 @@ case (state)
 			nxt_state = READ_MISS_0_WAIT;
 		else
 			cpu0_datasel = SOURCE_DMEM;
-			
 	end
 	READ_MISS_1: begin
-	    grant_0 = 0;
-		grant_1 = 1;
+
 		BOCI = BICO_1;
 		if(cpu0_search_found)// make data available for 2 cycles at least
-			cpu1_datasel = SOURCE_OTHER_PROC; // 1 is other processor, 0 is bus
-		else 
-			cpu1_datasel = SOURCE_DMEM;
+			cpu1_datasel = SOURCE_OTHER_PROC; // 1 is other processor, 0 is bus			
+		else begin
+			//cpu0_datasel = SOURCE_DMEM;
+			re = 1;
+			grant_1 = 1;
+			nxt_state = READ_MISS_1_WAIT;
+		end
 		/* route data from cpu0 to cpu1 */
+	end
+	READ_MISS_1_WAIT: begin
+		if (!u_rdy)
+			nxt_state = READ_MISS_1_WAIT;
+		else
+			cpu0_datasel = SOURCE_DMEM;		
 	end
 	WRITE_MISS_0: begin
 		grant_0 = 0;

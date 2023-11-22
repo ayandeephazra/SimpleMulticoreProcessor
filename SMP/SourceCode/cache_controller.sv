@@ -145,17 +145,19 @@ module cache_controller
 						end else
 							// not possible by definition
 								nxt_state = R_READMEM;
-							// hit in read situation, we continue on to IDLE to look for new signals
 						end 
 					end else
-						// Dcache hit and Icache hit do nothing - SHARED, MODIFIED
+						//////////////////////////////////////////////////////////////////
+				   		// Dcache hit and Icache hit do nothing - SHARED, MODIFIED     //
+				   		////////////////////////////////////////////////////////////////
 						nxt_state = IDLE;
+						// hit in read situation, we continue on to IDLE to look for new signals
 			end
 			
 			READ_MISS: begin
 				d_rdy = 0;
 				if (grant) begin
-					//nxt_state = IDLE;
+					d_rdy = 0;
 					// wait state if dmem is the source, do the datasel mux select once u_rdy
 					if (cpu_datasel == SOURCE_OTHER_PROC) begin
 						d_we = 1;
@@ -165,11 +167,13 @@ module cache_controller
 					end else if (u_rdy && cpu_datasel == SOURCE_DMEM) begin
 						d_we = 1;
 						nxt_state = IDLE;
-						use_flopped_addr = 1;
+						dfill = 1;
 						wstate = SHARED; 
 					end
-				end else
-					nxt_state = READ_MISS;
+				end else begin
+					// wait in IDLE till you are granted access
+					nxt_state = IDLE;
+				end
 			end
 			
 			READ_MISS_WAIT: begin
@@ -179,7 +183,7 @@ module cache_controller
 				else begin
 					d_we = 1;
 					nxt_state = IDLE;
-					use_flopped_addr = 1;
+					dfill = 1;
 					wstate = SHARED; 
 				end
 					
