@@ -188,9 +188,10 @@ case (state)
 	READ_MISS_1: begin
 
 		BOCI = BICO_1;
-		if(cpu0_search_found)// make data available for 2 cycles at least
+		if(cpu0_search_found) begin// make data available for 2 cycles at least
 			cpu1_datasel = SOURCE_OTHER_PROC; // 1 is other processor, 0 is bus			
-		else begin
+			grant_1 = 1;
+		end else begin
 			//cpu0_datasel = SOURCE_DMEM;
 			re = 1;
 			grant_1 = 1;

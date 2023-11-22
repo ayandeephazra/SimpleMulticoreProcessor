@@ -26,7 +26,7 @@ typedef enum reg[1:0] {IDLE, WRITE, READ} state_t;
 state_t state, nxt_state;
 
 reg [10:0] addr_capture;								// capture the address at start of read
-reg [1:0] wait_state_cnt;								// counter for 4-clock access time
+reg [3:0] wait_state_cnt;								// counter for 4-clock access time
 reg clr_cnt,int_we,int_re;								// state machine outputs
 
   
@@ -68,10 +68,10 @@ always @(posedge clk, negedge rst_n)
 ///////////////////////
 always @(posedge clk, negedge rst_n)
   if (!rst_n)
-    wait_state_cnt <= 2'b00;
+    wait_state_cnt <= 4'b0000;
   else
     if (clr_cnt)
-      wait_state_cnt <= 2'b00;
+      wait_state_cnt <= 4'b0000;
 	else
       wait_state_cnt <= wait_state_cnt + 1;
 	

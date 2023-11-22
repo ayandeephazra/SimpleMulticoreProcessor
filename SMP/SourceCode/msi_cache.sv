@@ -59,7 +59,7 @@ always @(clk or re or addr)
   if (clk && re) begin				// read is on clock high
     line = mem[addr[5:0]];
   // if the valid bit in address is high, then there is a match
-  end else if (clk && cpu_search && (mem[BOCI[5:0]][70] == 1'b1)) begin
+  end else if (clk && cpu_search && (^mem[BOCI[5:0]][70:69] == 1'b1)) begin
 		cpu_search_found = 1;
 		other_proc_data_line = mem[BOCI[5:0]];
         block_state = blk_state_t'(mem[BOCI[5:0]][70:69]);
