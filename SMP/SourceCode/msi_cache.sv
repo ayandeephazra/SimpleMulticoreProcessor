@@ -63,7 +63,7 @@ always @(clk or re or addr)
 		cpu_search_found = 1;
 		other_proc_data_line = mem[BOCI[5:0]];
         block_state = blk_state_t'(mem[BOCI[5:0]][70:69]);
-  end else
+  end else if (clk)
 		cpu_search_found = 0;
 	
 /////////////////////////////////////////////////////////////

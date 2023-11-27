@@ -55,7 +55,9 @@ module cache_controller
 	blk_state_t wstate;
 	blk_state_t rstate;
 	
-	typedef enum reg [4:0] {IDLE, READ_MISS, READ_MISS_WAIT, WRITE_MISS, R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
+	typedef enum reg [4:0] {IDLE, READ_MISS, READ_MISS_WAIT, D_RDY, WRITE_MISS, 
+		R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
+		
 	state_t state, nxt_state;
 	
 	always_ff @ (posedge clk, negedge rst_n) begin
@@ -157,14 +159,19 @@ module cache_controller
 			READ_MISS: begin
 				d_rdy = 0;
 				if (grant) begin
-					d_rdy = 0;
+					
 					// wait state if dmem is the source, do the datasel mux select once u_rdy
 					if (cpu_datasel == SOURCE_OTHER_PROC) begin
+						//d_rdy = 1;
 						d_we = 1;
+						wstate = SHARED;
+						nxt_state = D_RDY;
 					end else if (!u_rdy ) begin
 						//d_re = 1;
+						d_rdy = 0;
 						nxt_state = READ_MISS_WAIT;
 					end else if (u_rdy && cpu_datasel == SOURCE_DMEM) begin
+						d_rdy = 0;
 						d_we = 1;
 						nxt_state = IDLE;
 						dfill = 1;
@@ -175,7 +182,7 @@ module cache_controller
 					nxt_state = IDLE;
 				end
 			end
-			
+						
 			READ_MISS_WAIT: begin
 				d_rdy = 0;
 				if (!u_rdy) 
@@ -185,8 +192,12 @@ module cache_controller
 					nxt_state = IDLE;
 					dfill = 1;
 					wstate = SHARED; 
-				end
-					
+				end	
+			end
+			
+			D_RDY: begin
+				d_rdy = 1;
+				nxt_state = IDLE;
 			end
 			
 			WRITE_MISS: begin
