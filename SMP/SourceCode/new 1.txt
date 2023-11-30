@@ -1,3 +1,9 @@
+have wait state for write in bus sm
+different invalidate as the ones in bus sm, 
+this invalidate is when search found is true, and we want to invalidate the block in p0
+
+cases we focus on for later:
+read miss case where we need to evict
 ######################################11.22###########################################
 1. multiple lw in a row fails, some are overwritten
 2. 2 lw to different addresses in succession works, something wrong with address capture

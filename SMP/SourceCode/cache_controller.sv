@@ -201,8 +201,13 @@ module cache_controller
 			end
 			
 			WRITE_MISS: begin
-				d_we = 1;
-				nxt_state = IDLE;
+				if (grant) begin 
+					d_we = 1;
+					nxt_state = IDLE;
+				end else begin
+					nxt_state = IDLE;
+					write_miss = 1;
+				end
 			end
 
 			R_EVICT: begin
