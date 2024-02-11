@@ -1,3 +1,7 @@
+1. send whole line cpu to cpu
+2. cpu invalidate signal 
+
+///////////////////
 have wait state for write in bus sm
 different invalidate as the ones in bus sm, 
 this invalidate is when search found is true, and we want to invalidate the block in p0

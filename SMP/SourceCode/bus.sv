@@ -48,7 +48,6 @@ localparam BLOCK_STATE_MODIFIED = 2'b10;
 localparam BLOCK_STATE_SHARED = 2'b01;
 localparam BLOCK_STATE_INVALID = 2'b00;
 
-/*typedef enum logic [2:0] {NOOP, READ_MISS_0, READ_MISS_1, WRITE_MISS_0, WRITE_MISS_1, INVALIDATE_0, INVALIDATE_1} bus_op_t;*/
 bus_op_t state, nxt_state;
 
 reg [1:0] count_to_4;
@@ -209,7 +208,9 @@ case (state)
 	WRITE_MISS_0: begin
 		grant_0 = 1;
 		grant_1 = 0;
+		
 		if(cpu1_search_found) begin
+			cpu0_datasel = SOURCE_OTHER_PROC;
 			if(block_state_1==BLOCK_STATE_SHARED) begin
 				/* invalidate on active copy on cpu1, write to block on cpu0 with addr, write back to dmem*/
 				BOCI = BICO_0;
@@ -222,13 +223,25 @@ case (state)
 			end else 
 				/*error*/
 				nxt_state = NOOP;
-		end else
-			nxt_state = NOOP;
+		end else begin
+			re = 1;
+			nxt_state = WRITE_MISS_0_WAIT;
+		end
+	end
+	WRITE_MISS_0_WAIT: begin
+		if (!u_rdy)
+			nxt_state = WRITE_MISS_0_WAIT;
+		else begin
+			
+			grant_0 = 1;
+		end
 	end
 	WRITE_MISS_1: begin
 		grant_0 = 0;
 		grant_1 = 1;
+		
 		if (cpu0_search_found) begin
+			cpu1_datasel = SOURCE_OTHER_PROC;
 			if(block_state_0==BLOCK_STATE_SHARED) begin
 				/* invalidate on active copy on cpu0, write to block on cpu1 with addr, write back to dmem*/
 				BOCI = BICO_1;
@@ -241,8 +254,18 @@ case (state)
 			end else
 				/*error*/
 				nxt_state = NOOP;
-		end else
-			nxt_state = NOOP;
+		end else begin
+			re = 1;
+			nxt_state = WRITE_MISS_1_WAIT;
+		end
+	end
+	WRITE_MISS_1_WAIT: begin
+		if (!u_rdy)
+			nxt_state = WRITE_MISS_1_WAIT;
+		else begin
+			
+			grant_1 = 1;
+		end
 	end
 	INVALIDATE_0:  begin
 		grant_0 = 1;

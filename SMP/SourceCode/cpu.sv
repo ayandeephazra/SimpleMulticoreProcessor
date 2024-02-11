@@ -18,7 +18,7 @@ module cpu
    input [1:0] cpu_datasel,					// where should this cpu get its data from?
   
    input invalidate_from_other_cpu,		// other cpu requests an invalidate on "now" stale copy that this guy his
-   input [15:0] other_proc_data,
+   input [63:0] other_proc_data,
    output logic read_miss,				  // read miss within cpu cache
    output logic write_miss,				  // write miss **
    output logic invalidate,				  // invalidate other cpu's copy
@@ -26,7 +26,7 @@ module cpu
    /*d*/output reg cpu_search_found,			// cpu search within the cache has returned a found value
    /*d*/output logic [12:0] BICO,			  // Bus In CPU Out
    output cpu_invalidate_dmem,			// invalidate using above tag on dmem 
-   output [15:0] send_other_proc_data,
+   output [63:0] send_other_proc_data,
    /* mem hierarchy feedback */
    output [10:0] u_addr,        		// address to unified memory
    output reg u_re, 				            // read enable and write enable to unified memory

@@ -10,7 +10,7 @@ module cache_controller
 	input re,
 	input cpu_search,
 	input [12:0] BOCI,
-	input [15:0] other_proc_data,
+	input [63:0] other_proc_data,
 	//input [15:0] bus_data,
 	input grant,
 	input u_rdy,
@@ -22,7 +22,7 @@ module cache_controller
 	output hit,
 	output [15:0] rd_data,
 	output cpu_search_found,
-	output [15:0] send_other_proc_data,
+	output [63:0] send_other_proc_data,
 	output reg read_miss,
 	output reg write_miss,
 	output reg invalidate,
@@ -51,12 +51,15 @@ module cache_controller
 	wire [12:0] cache_res_addr;
 	reg use_flopped_addr;
 	reg [63:0] d_line_capture;
+	reg [12:0] addr_capture_write_miss;
+	reg [63:0] d_line_capture_write_miss;
+	
 	//logic set_dirty;
 	blk_state_t wstate;
 	blk_state_t rstate;
 	
 	typedef enum reg [4:0] {IDLE, READ_MISS, READ_MISS_WAIT, D_RDY, WRITE_MISS, 
-		R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
+		WRITE_MISS_WAIT, R_EVICT, W_EVICT, R_READMEM, W_READMEM, DEF} state_t;
 		
 	state_t state, nxt_state;
 	
@@ -93,23 +96,21 @@ module cache_controller
 						d_rdy = 0;
 						if(blk_state_t'(rstate)==INVALID) begin
 							// write miss only possible if the block is invalid 
-							wstate = MODIFIED;
 							write_miss = 1;
-							nxt_state = WRITE_MISS;
-							d_we = 1;
-							
-						end else if (blk_state_t'(rstate)==MODIFIED) begin
-				   			////////////////////////////////////////////////////////////////////////////
-				   			// Need to evict this line then read in a new one and write the new data //
-				   			//////////////////////////////////////////////////////////////////////////
-				   			evicting = 1;
-				   			nxt_state = W_EVICT;
-				   			u_we = 1;				// start the write to unified
-				 		end else begin
+							nxt_state = WRITE_MISS;							
+						end /*if (blk_state_t'(rstate)==MODIFIED) begin
+			       			//////////////////////////////////////////////////
+						   // Need to write out dirty line before filling //
+						   ////////////////////////////////////////////////
+						   evicting = 1;
+						   nxt_state = R_EVICT;
+						   u_we = 1;
+				   		end */else begin
 				   			//////////////////////////////////////////////////////////////////
 				   			// Need to read a new line from unified and write the new data //
 				   			////////////////////////////////////////////////////////////////
 				   			nxt_state = W_READMEM;
+							u_re = 1;
 						end
 					
 					end else begin
@@ -126,6 +127,12 @@ module cache_controller
 							invalidate = 1;
 						end else if (blk_state_t'(rstate)==MODIFIED) begin
 							wstate = MODIFIED;
+							////////////////////////////////////////////////////////////////////////////
+				   			// Need to evict this line then read in a new one and write the new data //
+				   			//////////////////////////////////////////////////////////////////////////
+				   			evicting = 1;
+				   			nxt_state = W_EVICT;
+				   			u_we = 1;				// start the write to unified
 						end else begin
 							nxt_state = IDLE;
 						end
@@ -201,12 +208,31 @@ module cache_controller
 			end
 			
 			WRITE_MISS: begin
+				d_rdy = 0;
 				if (grant) begin 
-					d_we = 1;
-					nxt_state = IDLE;
+					if (!u_rdy) begin
+						nxt_state = WRITE_MISS_WAIT;
+					end else begin
+						d_we = 1;
+					 	wstate = MODIFIED;
+					 	nxt_state = D_RDY;
+					end
+					//d_we = 1;
+					//nxt_state = IDLE;
 				end else begin
+					//write_miss = 1;
 					nxt_state = IDLE;
-					write_miss = 1;
+				end
+			end
+			
+			WRITE_MISS_WAIT: begin
+				d_rdy = 0;
+				if (!u_rdy) begin
+					nxt_state = WRITE_MISS_WAIT;
+				end else begin
+					 d_we = 1;
+					 wstate = MODIFIED;
+					 nxt_state = D_RDY;
 				end
 			end
 
@@ -235,7 +261,7 @@ module cache_controller
 			end
 			W_EVICT: begin
 				/* stay in this state till dmem is free then write */
-				d_rdy = 0;
+				//d_rdy = 0;
 				if (u_rdy & grant)
 					nxt_state = W_READMEM;
 				else
@@ -269,10 +295,10 @@ module cache_controller
                   ((addr[1:0]==2'b01)&& hit) ? {d_line[63:32],wr_data,d_line[15:0]} :
                   ((addr[1:0]==2'b10)&& hit) ? {d_line[63:48],wr_data,d_line[31:0]} :
 				  ((addr[1:0]==2'b11)&& hit) ? {wr_data,d_line[47:0]} :
-				  ((addr[1:0]==2'b00)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:16], other_proc_data} :
-				  ((addr[1:0]==2'b01)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:32], other_proc_data, d_line[15:0]} :
-				  ((addr[1:0]==2'b10)&& !hit && (cpu_datasel==2'b01)) ? {d_line[63:48], other_proc_data, d_line[31:0]} :
-				  ((addr[1:0]==2'b11)&& !hit && (cpu_datasel==2'b01)) ? {other_proc_data, d_line[47:0]} :
+				  ((addr[1:0]==2'b00)&& !hit && (cpu_datasel==2'b01)) ? {other_proc_data[63:16], wr_data} :
+				  ((addr[1:0]==2'b01)&& !hit && (cpu_datasel==2'b01)) ? {other_proc_data[63:32], wr_data, other_proc_data[15:0]} :
+				  ((addr[1:0]==2'b10)&& !hit && (cpu_datasel==2'b01)) ? {other_proc_data[63:48], wr_data, other_proc_data[31:0]} :
+				  ((addr[1:0]==2'b11)&& !hit && (cpu_datasel==2'b01)) ? {wr_data, other_proc_data[47:0]} :
 				  (BOCI[1:0]==2'b00 && invalidate_from_other_cpu)? {d_line[63:16], 16'hxxxx} :
 				  (BOCI[1:0]==2'b01 && invalidate_from_other_cpu)? {d_line[63:32], 16'hxxxx, d_line[15:0]} :
 				  (BOCI[1:0]==2'b10 && invalidate_from_other_cpu)? {d_line[63:48], 16'hxxxx, d_line[31:0]} :
@@ -284,10 +310,10 @@ module cache_controller
 			     (addr[1:0]==2'b10) ? d_line[47:32] :
 			     d_line[63:48];
 				 
-	assign send_other_proc_data = (BOCI[1:0]==2'b00) ? other_proc_data_line_wire[15:0] :
+	assign send_other_proc_data = other_proc_data_line_wire;/*(BOCI[1:0]==2'b00) ? other_proc_data_line_wire[15:0] :
                  (BOCI[1:0]==2'b01) ? other_proc_data_line_wire[31:16] :
 			     (BOCI[1:0]==2'b10) ? other_proc_data_line_wire[47:32] :
-			     other_proc_data_line_wire[63:48];				
+	other_proc_data_line_wire[63:48];*/				
 				 
 	assign Dwrt_line = (dfill) ? u_rd_data : wrt_line;
 				 
@@ -296,15 +322,20 @@ module cache_controller
 	// If Dcache are we evicting and have to use dtag for address?    //
 	///////////////////////////////////////////////////////////////////
 	assign u_addr = (evicting) ? {tag_out,addr[7:2]} :
-				addr[12:2];					// address is forcibly aligned to 64-bit boundary
-	//assign u_addr = addr[12:2];
-	
+				addr[12:2];					// address is forcibly aligned to 64-bit boundary	
 	
 	always_ff @ (posedge clk)
 		if (re & !u_rdy) begin
 			addr_capture <= addr;
 			d_line_capture <= d_line;
 		end	
+		
+	always_ff @ (posedge clk) 
+		if (we & !hit) begin
+			addr_capture_write_miss <=addr;
+			d_line_capture_write_miss <= d_line;
+		end
+	
 	assign cache_res_addr = (use_flopped_addr)? addr_capture: addr;
 
 	/////////////////////////

@@ -28,11 +28,9 @@
 # Compile of UART_rx.sv was successful.
 # Compile of cache_controller.sv was successful.
 # Compile of smp_test.sv was successful.
-# Compile of msi_cache.sv was successful.
-# 28 compiles, 0 failed with no errors.
 vsim -gui work.smp_test
 # vsim -gui work.smp_test 
-# Start time: 10:04:24 on Nov 29,2023
+# Start time: 18:51:59 on Dec 05,2023
 # Loading sv_std.std
 # Loading work.smp_test
 # Loading work.smp
@@ -52,156 +50,25 @@ vsim -gui work.smp_test
 # Loading work.bus
 # Loading work.d_mem
 # Loading work.intCntrl
+# Compile of msi_cache.sv was successful.
+# 28 compiles, 0 failed with no errors.
 add wave -position insertpoint  \
-sim:/smp_test/clk \
-sim:/smp_test/rst_n
+sim:/smp_test/iSMP0/iBUS0/clk \
+sim:/smp_test/iSMP0/iBUS0/rst_n \
+sim:/smp_test/iSMP0/iBUS0/read_miss_0 \
+sim:/smp_test/iSMP0/iBUS0/read_miss_1 \
+sim:/smp_test/iSMP0/iBUS0/write_miss_0 \
+sim:/smp_test/iSMP0/iBUS0/write_miss_1
 # ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
 #           File in use by: Ayan Deep Hazra  Hostname: LAPTOP-F99DH5B4  ProcessID: 17196
-#           Attempting to use alternate WLF file "./wlftt1nh4t".
+#           Attempting to use alternate WLF file "./wlftb7mg6k".
 # ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
-#           Using alternate file: ./wlftt1nh4t
+#           Using alternate file: ./wlftb7mg6k
 add wave -position insertpoint  \
-sim:/smp_test/iSMP0/iDMEM0/mem
-add wave -position insertpoint  \
-sim:/smp_test/iSMP0/iCPU0/iCC0/addr \
-sim:/smp_test/iSMP0/iCPU0/iCC0/wr_data \
-sim:/smp_test/iSMP0/iCPU0/iCC0/we \
-sim:/smp_test/iSMP0/iCPU0/iCC0/re \
-sim:/smp_test/iSMP0/iCPU0/iCC0/cpu_search \
-sim:/smp_test/iSMP0/iCPU0/iCC0/BOCI \
-sim:/smp_test/iSMP0/iCPU0/iCC0/other_proc_data \
-sim:/smp_test/iSMP0/iCPU0/iCC0/grant \
-sim:/smp_test/iSMP0/iCPU0/iCC0/u_rdy \
-sim:/smp_test/iSMP0/iCPU0/iCC0/u_rd_data \
-sim:/smp_test/iSMP0/iCPU0/iCC0/cpu_datasel \
-sim:/smp_test/iSMP0/iCPU0/iCC0/invalidate_from_other_cpu \
-sim:/smp_test/iSMP0/iCPU0/iCC0/d_rdy \
-sim:/smp_test/iSMP0/iCPU0/iCC0/hit \
-sim:/smp_test/iSMP0/iCPU0/iCC0/rd_data \
-sim:/smp_test/iSMP0/iCPU0/iCC0/cpu_search_found \
-sim:/smp_test/iSMP0/iCPU0/iCC0/send_other_proc_data \
-sim:/smp_test/iSMP0/iCPU0/iCC0/read_miss \
-sim:/smp_test/iSMP0/iCPU0/iCC0/write_miss \
-sim:/smp_test/iSMP0/iCPU0/iCC0/invalidate \
-sim:/smp_test/iSMP0/iCPU0/iCC0/u_addr \
-sim:/smp_test/iSMP0/iCPU0/iCC0/u_we \
-sim:/smp_test/iSMP0/iCPU0/iCC0/u_re \
-sim:/smp_test/iSMP0/iCPU0/iCC0/d_line \
-sim:/smp_test/iSMP0/iCPU0/iCC0/BICO \
-sim:/smp_test/iSMP0/iCPU0/iCC0/block_state \
-sim:/smp_test/iSMP0/iCPU0/iCC0/wrt_line \
-sim:/smp_test/iSMP0/iCPU0/iCC0/dirty \
-sim:/smp_test/iSMP0/iCPU0/iCC0/other_proc_data_line_wire \
-sim:/smp_test/iSMP0/iCPU0/iCC0/evicting \
-sim:/smp_test/iSMP0/iCPU0/iCC0/d_we \
-sim:/smp_test/iSMP0/iCPU0/iCC0/d_re \
-sim:/smp_test/iSMP0/iCPU0/iCC0/dfill \
-sim:/smp_test/iSMP0/iCPU0/iCC0/Dwrt_line \
-sim:/smp_test/iSMP0/iCPU0/iCC0/tag_out \
-sim:/smp_test/iSMP0/iCPU0/iCC0/addr_capture \
-sim:/smp_test/iSMP0/iCPU0/iCC0/cache_res_addr \
-sim:/smp_test/iSMP0/iCPU0/iCC0/use_flopped_addr \
-sim:/smp_test/iSMP0/iCPU0/iCC0/d_line_capture \
-sim:/smp_test/iSMP0/iCPU0/iCC0/wstate \
-sim:/smp_test/iSMP0/iCPU0/iCC0/rstate \
-sim:/smp_test/iSMP0/iCPU0/iCC0/state \
-sim:/smp_test/iSMP0/iCPU0/iCC0/nxt_state
-add wave -position insertpoint  \
-sim:/smp_test/iSMP0/iCPU1/iCC0/addr \
-sim:/smp_test/iSMP0/iCPU1/iCC0/wr_data \
-sim:/smp_test/iSMP0/iCPU1/iCC0/we \
-sim:/smp_test/iSMP0/iCPU1/iCC0/re \
-sim:/smp_test/iSMP0/iCPU1/iCC0/cpu_search \
-sim:/smp_test/iSMP0/iCPU1/iCC0/BOCI \
-sim:/smp_test/iSMP0/iCPU1/iCC0/other_proc_data \
-sim:/smp_test/iSMP0/iCPU1/iCC0/grant \
-sim:/smp_test/iSMP0/iCPU1/iCC0/u_rdy \
-sim:/smp_test/iSMP0/iCPU1/iCC0/u_rd_data \
-sim:/smp_test/iSMP0/iCPU1/iCC0/cpu_datasel \
-sim:/smp_test/iSMP0/iCPU1/iCC0/invalidate_from_other_cpu \
-sim:/smp_test/iSMP0/iCPU1/iCC0/d_rdy \
-sim:/smp_test/iSMP0/iCPU1/iCC0/hit \
-sim:/smp_test/iSMP0/iCPU1/iCC0/rd_data \
-sim:/smp_test/iSMP0/iCPU1/iCC0/cpu_search_found \
-sim:/smp_test/iSMP0/iCPU1/iCC0/send_other_proc_data \
-sim:/smp_test/iSMP0/iCPU1/iCC0/read_miss \
-sim:/smp_test/iSMP0/iCPU1/iCC0/write_miss \
-sim:/smp_test/iSMP0/iCPU1/iCC0/invalidate \
-sim:/smp_test/iSMP0/iCPU1/iCC0/u_addr \
-sim:/smp_test/iSMP0/iCPU1/iCC0/u_we \
-sim:/smp_test/iSMP0/iCPU1/iCC0/u_re \
-sim:/smp_test/iSMP0/iCPU1/iCC0/d_line \
-sim:/smp_test/iSMP0/iCPU1/iCC0/BICO \
-sim:/smp_test/iSMP0/iCPU1/iCC0/block_state \
-sim:/smp_test/iSMP0/iCPU1/iCC0/wrt_line \
-sim:/smp_test/iSMP0/iCPU1/iCC0/dirty \
-sim:/smp_test/iSMP0/iCPU1/iCC0/other_proc_data_line_wire \
-sim:/smp_test/iSMP0/iCPU1/iCC0/evicting \
-sim:/smp_test/iSMP0/iCPU1/iCC0/d_we \
-sim:/smp_test/iSMP0/iCPU1/iCC0/d_re \
-sim:/smp_test/iSMP0/iCPU1/iCC0/dfill \
-sim:/smp_test/iSMP0/iCPU1/iCC0/Dwrt_line \
-sim:/smp_test/iSMP0/iCPU1/iCC0/tag_out \
-sim:/smp_test/iSMP0/iCPU1/iCC0/addr_capture \
-sim:/smp_test/iSMP0/iCPU1/iCC0/cache_res_addr \
-sim:/smp_test/iSMP0/iCPU1/iCC0/use_flopped_addr \
-sim:/smp_test/iSMP0/iCPU1/iCC0/d_line_capture \
-sim:/smp_test/iSMP0/iCPU1/iCC0/wstate \
-sim:/smp_test/iSMP0/iCPU1/iCC0/rstate \
-sim:/smp_test/iSMP0/iCPU1/iCC0/state \
-sim:/smp_test/iSMP0/iCPU1/iCC0/nxt_state
-run -all
-# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
-#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
-# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
-add wave -position 47  sim:/smp_test/iSMP0/iCPU0/iCC0/Dcache/mem
-add wave -position 49  sim:/smp_test/iSMP0/iCPU1/iCC0/Dcache/mem
-restart
-run -all
-# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
-#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
-# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
-# Compile of cache_controller.sv was successful.
-restart
-# Loading work.cache_controller
-run -all
-# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
-#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
-# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
-# Compile of bus.sv was successful.
-restart
-# Loading work.bus
-run -all
-# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
-#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
-# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
-add wave -position insertpoint  \
-sim:/smp_test/iSMP0/iBUS0/cpu0_search \
-sim:/smp_test/iSMP0/iBUS0/cpu1_search \
-sim:/smp_test/iSMP0/iBUS0/we \
-sim:/smp_test/iSMP0/iBUS0/re \
 sim:/smp_test/iSMP0/iBUS0/state \
 sim:/smp_test/iSMP0/iBUS0/nxt_state
-restart
-run -all
-# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
-#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
-# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
-# Compile of bus.sv was successful.
-restart
-# Loading work.bus
-run -all
-# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
-#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
-# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
-restart
-run -all
-# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
-#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
-# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
-# Compile of cache_controller.sv was successful.
-restart
-# Loading work.cache_controller
+add wave -position insertpoint sim:/smp_test/iSMP0/iCPU1/iCC0/*
+add wave -position insertpoint sim:/smp_test/iSMP0/iCPU0/iCC0/*
 run -all
 # ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
 #    Time: 300005 ps  Iteration: 1  Instance: /smp_test
@@ -215,8 +82,511 @@ run -all
 restart
 # Loading work.cache_controller
 run -all
+# ** Error (suppressible): (vsim-3601) Iteration limit 5000 reached at time 75 ps.
+restart
+run -all
+# ** Error (suppressible): (vsim-3601) Iteration limit 5000 reached at time 75 ps.
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
 # ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
 #    Time: 300005 ps  Iteration: 1  Instance: /smp_test
 # Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
-# End time: 22:30:47 on Nov 29,2023, Elapsed time: 12:26:23
-# Errors: 1, Warnings: 2
+add wave -position insertpoint  \
+sim:/smp_test/iSMP0/iCPU1/iRF/iBNK1/mem
+add wave -position 56  sim:/smp_test/iSMP0/iCPU0/iRF/iBNK1/mem
+restart
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+restart
+add wave -position 54  sim:/smp_test/iSMP0/iDMEM0/mem
+restart
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of cache_controller.sv failed with 7 errors.
+# Compile of cache_controller.sv failed with 5 errors.
+# Compile of cache_controller.sv failed with 5 errors.
+# Compile of cache_controller.sv failed with 5 errors.
+# Compile of cache_controller.sv was successful.
+# Compile of UART_tx.sv was successful.
+# Compile of alu.sv was successful.
+# Compile of br_bool.sv was successful.
+# Compile of bus.sv was successful.
+# Compile of common_package.sv was successful.
+# Compile of cpu.sv was successful.
+# Compile of cpu_tb.v was successful.
+# Compile of d_mem.sv was successful.
+# Compile of data_mem.sv was successful.
+# Compile of dst_mux.sv was successful.
+# Compile of icarusTest.sv was successful.
+# Compile of icarusTest_tb.sv was successful.
+# Compile of id.sv was successful.
+# Compile of instr_mem.sv was successful.
+# Compile of intCntrl.sv was successful.
+# Compile of prgm_cntr.sv was successful.
+# Compile of rf.sv was successful.
+# Compile of rf_mem_blk.v was successful.
+# Compile of rst_synch.v was successful.
+# Compile of smp.sv was successful.
+# Compile of spart.sv was successful.
+# Compile of spart_split_bus.sv was successful.
+# Compile of src_mux.sv was successful.
+# Compile of UART_Q.sv was successful.
+# Compile of UART_rx.sv was successful.
+# Compile of cache_controller.sv was successful.
+# Compile of smp_test.sv was successful.
+# Compile of msi_cache.sv was successful.
+# 28 compiles, 0 failed with no errors.
+restart
+# Loading work.smp_test
+# Loading work.smp
+# Loading work.common
+# Loading work.cpu
+# Loading work.pc
+# Loading work.IM
+# Loading work.id
+# Loading work.rf
+# Loading work.rf_mem_blk
+# Loading work.src_mux
+# Loading work.alu
+# Loading work.cache_controller
+# Loading work.msi_cache
+# Loading work.dst_mux
+# Loading work.br_bool
+# Loading work.bus
+# Loading work.d_mem
+# Loading work.intCntrl
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+add wave -position insertpoint  \
+sim:/smp_test/iSMP0/mem_wdata_line
+restart
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of smp.sv was successful.
+# Compile of cache_controller.sv was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.smp
+# Loading work.cache_controller
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of bus.sv failed with 4 errors.
+# Compile of bus.sv failed with 4 errors.
+# Compile of common_package.sv was successful.
+# 2 compiles, 1 failed with 4 errors.
+# Compile of bus.sv was successful.
+restart
+# ** Error: (vsim-13) Recompile work.cpu because work.common has changed.
+# Compile of UART_tx.sv was successful.
+# Compile of alu.sv was successful.
+# Compile of br_bool.sv was successful.
+# Compile of bus.sv was successful.
+# Compile of common_package.sv was successful.
+# Compile of cpu.sv was successful.
+# Compile of cpu_tb.v was successful.
+# Compile of d_mem.sv was successful.
+# Compile of data_mem.sv was successful.
+# Compile of dst_mux.sv was successful.
+# Compile of icarusTest.sv was successful.
+# Compile of icarusTest_tb.sv was successful.
+# Compile of id.sv was successful.
+# Compile of instr_mem.sv was successful.
+# Compile of intCntrl.sv was successful.
+# Compile of prgm_cntr.sv was successful.
+# Compile of rf.sv was successful.
+# Compile of rf_mem_blk.v was successful.
+# Compile of rst_synch.v was successful.
+# Compile of smp.sv was successful.
+# Compile of spart.sv was successful.
+# Compile of spart_split_bus.sv was successful.
+# Compile of src_mux.sv was successful.
+# Compile of UART_Q.sv was successful.
+# Compile of UART_rx.sv was successful.
+# Compile of cache_controller.sv was successful.
+# Compile of smp_test.sv was successful.
+# Compile of msi_cache.sv was successful.
+# 28 compiles, 0 failed with no errors.
+vsim -gui work.smp_test
+# vsim -gui work.smp_test 
+# Start time: 18:51:59 on Dec 05,2023
+# Error loading design
+# End time: 06:44:30 on Dec 06,2023, Elapsed time: 11:52:31
+# Errors: 4, Warnings: 2
+# Compile of bus.sv was successful.
+vsim -gui work.smp_test
+# vsim -gui work.smp_test 
+# Start time: 06:45:16 on Dec 06,2023
+# Loading sv_std.std
+# Loading work.smp_test
+# Loading work.smp
+# Loading work.common
+# Loading work.cpu
+# Loading work.pc
+# Loading work.IM
+# Loading work.id
+# Loading work.rf
+# Loading work.rf_mem_blk
+# Loading work.src_mux
+# Loading work.alu
+# Loading work.cache_controller
+# Loading work.msi_cache
+# Loading work.dst_mux
+# Loading work.br_bool
+# Loading work.bus
+# Loading work.d_mem
+# Loading work.intCntrl
+# ** Warning: (vsim-WLF-5000) WLF file currently in use: vsim.wlf
+#           File in use by: Ayan Deep Hazra  Hostname: LAPTOP-F99DH5B4  ProcessID: 17196
+#           Attempting to use alternate WLF file "./wlft6ma28r".
+# ** Warning: (vsim-WLF-5001) Could not open WLF file: vsim.wlf
+#           Using alternate file: ./wlft6ma28r
+run -all
+# ** Error (suppressible): (vsim-3601) Iteration limit 5000 reached at time 75 ps.
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Error (suppressible): (vsim-3601) Iteration limit 5000 reached at time 75 ps.
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Error (suppressible): (vsim-3601) Iteration limit 5000 reached at time 75 ps.
+# Compile of bus.sv was successful.
+restart
+# Loading work.bus
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Error (suppressible): (vsim-3601) Iteration limit 5000 reached at time 115 ps.
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of bus.sv was successful.
+# Compile of cache_controller.sv was successful.
+# 2 compiles, 0 failed with no errors.
+restart
+# Loading work.cache_controller
+# Loading work.bus
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of UART_tx.sv was successful.
+# Compile of alu.sv was successful.
+# Compile of br_bool.sv was successful.
+# Compile of bus.sv was successful.
+# Compile of common_package.sv was successful.
+# Compile of cpu.sv was successful.
+# Compile of cpu_tb.v was successful.
+# Compile of d_mem.sv was successful.
+# Compile of data_mem.sv was successful.
+# Compile of dst_mux.sv was successful.
+# Compile of icarusTest.sv was successful.
+# Compile of icarusTest_tb.sv was successful.
+# Compile of id.sv was successful.
+# Compile of instr_mem.sv was successful.
+# Compile of intCntrl.sv was successful.
+# Compile of prgm_cntr.sv was successful.
+# Compile of rf.sv was successful.
+# Compile of rf_mem_blk.v was successful.
+# Compile of rst_synch.v was successful.
+# Compile of smp.sv was successful.
+# Compile of spart.sv was successful.
+# Compile of spart_split_bus.sv was successful.
+# Compile of src_mux.sv was successful.
+# Compile of UART_Q.sv was successful.
+# Compile of UART_rx.sv was successful.
+# Compile of cache_controller.sv was successful.
+# Compile of smp_test.sv was successful.
+# Compile of msi_cache.sv was successful.
+# 28 compiles, 0 failed with no errors.
+restart
+# Loading work.smp_test
+# Loading work.smp
+# Loading work.common
+# Loading work.cpu
+# Loading work.pc
+# Loading work.IM
+# Loading work.id
+# Loading work.rf
+# Loading work.rf_mem_blk
+# Loading work.src_mux
+# Loading work.alu
+# Loading work.cache_controller
+# Loading work.msi_cache
+# Loading work.dst_mux
+# Loading work.br_bool
+# Loading work.bus
+# Loading work.d_mem
+# Loading work.intCntrl
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+add wave -position 9  sim:/smp_test/iSMP0/we
+add wave -position 10  sim:/smp_test/iSMP0/re
+restart
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+add wave -position 11  sim:/smp_test/iSMP0/iBUS0/u_we_0
+add wave -position 12  sim:/smp_test/iSMP0/iBUS0/u_we_1
+add wave -position 13  sim:/smp_test/iSMP0/iBUS0/u_re_0
+add wave -position 14  sim:/smp_test/iSMP0/iBUS0/u_re_1
+restart
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+add wave -position 64  sim:/smp_test/iSMP0/iCPU0/iCC0/Dcache/mem
+restart
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+add wave -position 63  sim:/smp_test/iSMP0/iCPU1/iCC0/Dcache/mem
+restart
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Error (suppressible): (vsim-3601) Iteration limit 5000 reached at time 115 ps.
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Error (suppressible): (vsim-3601) Iteration limit 5000 reached at time 105 ps.
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Error (suppressible): (vsim-3601) Iteration limit 5000 reached at time 115 ps.
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Error (suppressible): (vsim-3601) Iteration limit 5000 reached at time 115 ps.
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of cache_controller.sv failed with 1 errors.
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of UART_tx.sv was successful.
+# Compile of alu.sv was successful.
+# Compile of br_bool.sv was successful.
+# Compile of bus.sv was successful.
+# Compile of common_package.sv was successful.
+# Compile of cpu.sv was successful.
+# Compile of cpu_tb.v was successful.
+# Compile of d_mem.sv was successful.
+# Compile of data_mem.sv was successful.
+# Compile of dst_mux.sv was successful.
+# Compile of icarusTest.sv was successful.
+# Compile of icarusTest_tb.sv was successful.
+# Compile of id.sv was successful.
+# Compile of instr_mem.sv was successful.
+# Compile of intCntrl.sv was successful.
+# Compile of prgm_cntr.sv was successful.
+# Compile of rf.sv was successful.
+# Compile of rf_mem_blk.v was successful.
+# Compile of rst_synch.v was successful.
+# Compile of smp.sv was successful.
+# Compile of spart.sv was successful.
+# Compile of spart_split_bus.sv was successful.
+# Compile of src_mux.sv was successful.
+# Compile of UART_Q.sv was successful.
+# Compile of UART_rx.sv was successful.
+# Compile of cache_controller.sv was successful.
+# Compile of smp_test.sv was successful.
+# Compile of msi_cache.sv was successful.
+# 28 compiles, 0 failed with no errors.
+restart
+# Loading work.smp_test
+# Loading work.smp
+# Loading work.common
+# Loading work.cpu
+# Loading work.pc
+# Loading work.IM
+# Loading work.id
+# Loading work.rf
+# Loading work.rf_mem_blk
+# Loading work.src_mux
+# Loading work.alu
+# Loading work.cache_controller
+# Loading work.msi_cache
+# Loading work.dst_mux
+# Loading work.br_bool
+# Loading work.bus
+# Loading work.d_mem
+# Loading work.intCntrl
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of UART_tx.sv was successful.
+# Compile of alu.sv was successful.
+# Compile of br_bool.sv was successful.
+# Compile of bus.sv was successful.
+# Compile of common_package.sv was successful.
+# Compile of cpu.sv was successful.
+# Compile of cpu_tb.v was successful.
+# Compile of d_mem.sv was successful.
+# Compile of data_mem.sv was successful.
+# Compile of dst_mux.sv was successful.
+# Compile of icarusTest.sv was successful.
+# Compile of icarusTest_tb.sv was successful.
+# Compile of id.sv was successful.
+# Compile of instr_mem.sv was successful.
+# Compile of intCntrl.sv was successful.
+# Compile of prgm_cntr.sv was successful.
+# Compile of rf.sv was successful.
+# Compile of rf_mem_blk.v was successful.
+# Compile of rst_synch.v was successful.
+# Compile of smp.sv was successful.
+# Compile of spart.sv was successful.
+# Compile of spart_split_bus.sv was successful.
+# Compile of src_mux.sv was successful.
+# Compile of UART_Q.sv was successful.
+# Compile of UART_rx.sv was successful.
+# Compile of cache_controller.sv was successful.
+# Compile of smp_test.sv was successful.
+# Compile of msi_cache.sv was successful.
+# 28 compiles, 0 failed with no errors.
+restart
+# Loading work.smp_test
+# Loading work.smp
+# Loading work.common
+# Loading work.cpu
+# Loading work.pc
+# Loading work.IM
+# Loading work.id
+# Loading work.rf
+# Loading work.rf_mem_blk
+# Loading work.src_mux
+# Loading work.alu
+# Loading work.cache_controller
+# Loading work.msi_cache
+# Loading work.dst_mux
+# Loading work.br_bool
+# Loading work.bus
+# Loading work.d_mem
+# Loading work.intCntrl
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+restart
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of UART_tx.sv was successful.
+# Compile of alu.sv was successful.
+# Compile of br_bool.sv was successful.
+# Compile of bus.sv was successful.
+# Compile of common_package.sv was successful.
+# Compile of cpu.sv was successful.
+# Compile of cpu_tb.v was successful.
+# Compile of d_mem.sv was successful.
+# Compile of data_mem.sv was successful.
+# Compile of dst_mux.sv was successful.
+# Compile of icarusTest.sv was successful.
+# Compile of icarusTest_tb.sv was successful.
+# Compile of id.sv was successful.
+# Compile of instr_mem.sv was successful.
+# Compile of intCntrl.sv was successful.
+# Compile of prgm_cntr.sv was successful.
+# Compile of rf.sv was successful.
+# Compile of rf_mem_blk.v was successful.
+# Compile of rst_synch.v was successful.
+# Compile of smp.sv was successful.
+# Compile of spart.sv was successful.
+# Compile of spart_split_bus.sv was successful.
+# Compile of src_mux.sv was successful.
+# Compile of UART_Q.sv was successful.
+# Compile of UART_rx.sv was successful.
+# Compile of cache_controller.sv was successful.
+# Compile of smp_test.sv was successful.
+# Compile of msi_cache.sv was successful.
+# 28 compiles, 0 failed with no errors.
+restart
+# Loading work.smp_test
+# Loading work.smp
+# Loading work.common
+# Loading work.cpu
+# Loading work.pc
+# Loading work.IM
+# Loading work.id
+# Loading work.rf
+# Loading work.rf_mem_blk
+# Loading work.src_mux
+# Loading work.alu
+# Loading work.cache_controller
+# Loading work.msi_cache
+# Loading work.dst_mux
+# Loading work.br_bool
+# Loading work.bus
+# Loading work.d_mem
+# Loading work.intCntrl
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21
+# Compile of cache_controller.sv was successful.
+restart
+# Loading work.cache_controller
+run -all
+# ** Note: $stop    : C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv(21)
+#    Time: 300005 ps  Iteration: 1  Instance: /smp_test
+# Break in Module smp_test at C:/Users/Ayan Deep Hazra/Desktop/Repos/SimpleMulticoreProcessor/SMP/smp_test.sv line 21

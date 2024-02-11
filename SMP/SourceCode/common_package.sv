@@ -16,7 +16,7 @@ package common;
 
   /// SM bus op ///
   typedef enum logic [3:0] {NOOP, READ_MISS_0, READ_MISS_0_WAIT, READ_MISS_1, READ_MISS_1_WAIT, WRITE_MISS_0, 
-      WRITE_MISS_1, INVALIDATE_0, INVALIDATE_1} bus_op_t;
+      WRITE_MISS_0_WAIT, WRITE_MISS_1, WRITE_MISS_1_WAIT, INVALIDATE_0, INVALIDATE_1} bus_op_t;
   
   /// Cache Block State ///
   typedef enum logic [1:0] {INVALID, SHARED, MODIFIED} blk_state_t;

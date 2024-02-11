@@ -27,7 +27,7 @@ module smp(
 	wire grant_0, grant_1;
 	wire cpu1_inv_from_cpu0, cpu0_inv_from_cpu1;
 	wire cpu0_invalidate_dmem, cpu1_invalidate_dmem;
-	wire [15:0] cpu0_1, cpu1_0; // data forwarding between cpus
+	wire [63:0] cpu0_1, cpu1_0; // data forwarding between cpus
 	
 
 	///////////////////////////////////
@@ -98,7 +98,7 @@ module smp(
 										.cpu1_invalidate_dmem(cpu1_invalidate_dmem), 
 											.cpu0_search(cpu0_search), .cpu1_search(cpu1_search), .we(we), .re(re));
 		
-	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(mem_addr), .re(re), .we(we), .wdata(), .rd_data(u_rd_data),
+	d_mem iDMEM0(.clk(clk), .rst_n(rst_n), .addr(mem_addr), .re(re), .we(we), .wdata(mem_wdata_line), .rd_data(u_rd_data),
 		.rdy(dmem_rdy));
 	
 	assign mem_addr = (grant_0)? cpu0_u_addr:
